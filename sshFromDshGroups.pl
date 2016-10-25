@@ -28,6 +28,7 @@ use feature 'say';
 #TODO : Installable package
 #TODO : Pipe output from Servers
 #TODO : use GroupFiles; # write a module for importing group files. thinking about merging multiple group files and lists and ignore empty lines, maybe check for validity of the lines? 
+#TODO : come up with a good name for this tool ... like sexecuter ... tehehe
 
 use Net::OpenSSH;
 use File::Slurp 'read_file';
@@ -37,6 +38,7 @@ use Parallel::ForkManager;
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use Cli;
+# TODO : use Cfg;
 
 my $params = Cli::getCliParams();
 
@@ -44,7 +46,6 @@ my $dshGroupPath = $ENV{HOME}."/.dsh/group/";
 my $serverpath  = $params->{gfile} || $dshGroupPath.$params->{gdsh};
 
 my @serverArray = read_file( $serverpath );
-say @serverArray;
 
 print "Connecting to the following servers :\n" . join "", @serverArray;
 
