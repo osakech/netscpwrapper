@@ -12,7 +12,7 @@
 #         BUGS: ---
 #        NOTES: ---
 #       AUTHOR: Alexandros Kechagias (osakech@gmail.com),
-#      VERSION: 0.1
+#      VERSION: 0.2
 #      CREATED: 22.10.2016 20:35:17
 #===============================================================================
 
@@ -20,25 +20,30 @@ use strict;
 use warnings;
 use feature 'say';
 
-#TODO : Support Config files
-#TODO : Ignore knownhosts
-#TODO : Modular
+use constant DEBUG => 0;
+our $VERSION = 0.2;
+
+#TODO : Documentation(!)
+#TODO : User Documentation(!)
+#TODO : Support Config files with default values?
+#TODO : StrictHostKeyChecking no option?
+#TODO : more Modular?
 #TODO : Tests TDD and regression
-#TODO : Enable plugins
-#TODO : Installable package
-#TODO : Pipe output from Servers
-#TODO : use GroupFiles; # write a module for importing group files. thinking about merging multiple group files and lists and ignore empty lines, maybe check for validity of the lines? 
-#TODO : come up with a good name for this tool ... like sexecuter ... tehehe
+#TODO : Enable plugins?
+#TODO : Installable package?
+#TODO : activate Pipe output from Servers?
+#TODO : use GroupFiles and merge cli servers?; # write a module for importing group files. thinking about merging multiple group files and lists and ignore empty lines, maybe check for validity of the lines? 
+#TODO : come up with a good name for this tool ... like sexecuter ... tehehe (!)
+#TODO : Config module or params enough?
+#TODO : deleteFilesOnServer()
 
 use Net::OpenSSH;
 use File::Slurp 'read_file';
-use Net::SCP;
 use Parallel::ForkManager;
 
 use FindBin;
 use lib "$FindBin::Bin/lib";
-use Cli;
-# TODO : use Cfg;
+use Cli '0.1';
 
 my $params = Cli::getCliParams();
 
@@ -78,41 +83,54 @@ foreach my $server (@serverArray) {
 $pm->wait_all_children();
 mergeFiles( \@tmpFilePaths );
 
-#TODO: deleteFilesOnServer();
-
 exit;
 
 sub mergeFiles {
     my ($tmpFilePaths) = @_;
     my $filesToMerge = join ' ', @$tmpFilePaths;
     my $ts = time();
-    `cat $filesToMerge > grepLog_sids_$ts`;
+    `cat $filesToMerge > merged_result_$ts`;
 
     #    `cat greplog_header $filesToMerge > grepLog_results_$ts`;
 }
 
 sub getFileFromServer {
     my ( $server, $copyToDir, $fileToGet ) = @_;
-    my $scp = Net::SCP->new($server);
-    $scp->cwd($copyToDir);
-    my $copyLocalyPath = join "_", ( $fileToGet, $server );
-    unlink $copyLocalyPath;
-    $scp->get( $fileToGet, $copyLocalyPath );
-    return $copyLocalyPath;
+#    my $scp = Net::SCP->new($server);
+    my $scp = Net::OpenSSH->new($server);
+    #$scp->cwd($copyToDir);
+    my $copyLocalPath = join "_", ( $fileToGet, $server );
+    unlink $copyLocalPath;
+    $scp->scp_get($fileToGet, $copyLocalPath );
+    return $copyLocalPath;
 }
+#$ssh->scp_get(\%opts, $remote1, $remote2,..., $local_dir_or_file)
+#$ssh->scp_put(\%opts, $local, $local2,..., $remote_dir_or_file)
 
 sub executeOnServer {
     my ( $server, $copyToDir, $scriptToExecute ) = @_;
     my $ssh = Net::OpenSSH->new($server);
     $ssh->error and die "Couldn't establish SSH connection: " . $ssh->error;
+    if (DEBUG){
+        say $$.' executeOnServer -> server -> '. $server;
+        say $$.' executeOnServer -> copyToDir -> '. $copyToDir;
+        say $$.' executeOnServer -> scriptToExecute -> '. $scriptToExecute;
+    }
     $ssh->system( join '/', ( $copyToDir, $scriptToExecute ) );
 }
 
 sub putFileOnServer {
     my ( $server, $copyToDir, $scriptToExecute ) = @_;
-    my $scp = Net::SCP->new($server);
-    $scp->cwd($copyToDir);
-    $scp->put($scriptToExecute);
+    my $ssh = Net::OpenSSH->new($server);
+    $ssh->error and die "Couldn't establish SSH connection: " . $ssh->error;
+#    $scp->cwd($copyToDir);
+#    $scp->put($scriptToExecute);
+    if (DEBUG){
+	    say $$.' putFileOnServer -> server -> '. $server;
+	    say $$.' putFileOnServer -> copyToDir -> '. $copyToDir;
+	    say $$.' putFileOnServer -> scriptToExecute -> '. $scriptToExecute;
+    }
+    $ssh->scp_put($scriptToExecute,$copyToDir);
 }
 
 #sub executeOnServerAndPipe{

@@ -7,12 +7,14 @@
 #
 #       AUTHOR: Alexandros Kechagias, osakech@gmail.com
 # ORGANIZATION: 
-#      VERSION: 1.0
+#      VERSION: 0.1
 #      CREATED: 24.10.2016 19:06:20
 #     REVISION: ---
 #===============================================================================
 use strict;
 use warnings;
+
+our $VERSION = '0.1';
 
 package Cli;
 
