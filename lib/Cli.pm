@@ -11,12 +11,13 @@
 #      CREATED: 24.10.2016 19:06:20
 #     REVISION: ---
 #===============================================================================
+package Cli;
+
 use strict;
 use warnings;
 
 our $VERSION = '0.1';
 
-package Cli;
 
 use Getopt::Long;
 

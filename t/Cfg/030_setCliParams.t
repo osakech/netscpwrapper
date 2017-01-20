@@ -11,7 +11,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;                      # last test to print
+use Test::More skip_all => 'not used atm';                      # last test to print
 use FindBin;
 
 use lib "$FindBin::Bin/../../lib";
