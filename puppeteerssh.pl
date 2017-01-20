@@ -1,9 +1,9 @@
 #!/usr/bin/env perl
 #===============================================================================
 #
-#         FILE: sshFromDshGroups.pl
+#         FILE: puppeteerssh.pl
 #
-#        USAGE: ./sshFromDshGroups.pl
+#        USAGE: ./puppeteerssh.pl
 #
 #  DESCRIPTION: Lets you copy a program of your choice on multiple servers and then execute it and then collect the output data from the server and merge the output on your local machine.
 #
@@ -28,12 +28,12 @@ use Parallel::ForkManager;
 
 use FindBin;
 use lib "$FindBin::Bin/lib";
-use Cli 0.2;
-use SSH 0.3;
+use PuppeteerSSH::Cli 0.2;
+use PuppeteerSSH::SSH 0.3;
 use Carp 'croak';
 
 
-my $params = Cli::getCliParams();
+my $params = PuppeteerSSH::Cli::getCliParams();
 
 my $dshGroupPath = $ENV{HOME}."/.dsh/group/";
 my $serverpath  = $params->{gfile} || $dshGroupPath.$params->{gdsh};
@@ -64,7 +64,7 @@ DATA_LOOP:
 foreach my $server (@serverArray) {
     $pm->start() and next DATA_LOOP;
     chomp $server;
-    my $sshConnection = SSH->new( $server ) or croak "Couldn't connect to server $server";
+    my $sshConnection = PuppeteerSSH::SSH->new( $server ) or croak "Couldn't connect to server $server";
     $sshConnection->putFileOnServer( $params->{destination}, $params->{script});
     $sshConnection->executeOnServer( $params->{destination}, $params->{script});
     my $copiedTo = $sshConnection->getFileFromServer( $params->{destination}, $params->{resultfile} );
