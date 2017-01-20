@@ -28,7 +28,7 @@ use Parallel::ForkManager;
 
 use FindBin;
 use lib "$FindBin::Bin/lib";
-use Cli 0.1;
+use Cli 0.2;
 use SSH 0.3;
 use Carp 'croak';
 
@@ -40,10 +40,13 @@ my $serverpath  = $params->{gfile} || $dshGroupPath.$params->{gdsh};
 
 my @serverArray = read_file( $serverpath );
 my $numberOfServers = scalar @serverArray;
+my $numberOfConnections = $params->{'num_connections'} ? $params->{'num_connections'} : $numberOfServers;
 
-print "Connecting to the following servers ($numberOfServers) :\n" . join "", @serverArray;
+say "Number of servers from the configfiles : $numberOfServers";
+say "Number of maximum parallel connections : $numberOfConnections";
+say "Connecting to the following servers :\n" . join "", @serverArray;
 
-my $pm = Parallel::ForkManager->new( $numberOfServers );
+my $pm = Parallel::ForkManager->new( $numberOfConnections );
 
 # data structure retrieval and handling
 my @tmpFilePaths;

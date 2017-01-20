@@ -7,7 +7,7 @@
 #
 #       AUTHOR: Alexandros Kechagias, osakech@gmail.com
 # ORGANIZATION: 
-#      VERSION: 0.1
+#      VERSION: 0.2
 #      CREATED: 24.10.2016 19:06:20
 #     REVISION: ---
 #===============================================================================
@@ -16,8 +16,7 @@ package Cli;
 use strict;
 use warnings;
 
-our $VERSION = '0.1';
-
+our $VERSION = '0.2';
 
 use Getopt::Long;
 
@@ -37,6 +36,7 @@ sub getCliParams {
             }
         ],
         [ 'destination|d=s', "path to copy the script on the server", { required => 1 } ],
+        [ 'num-connections|n=i', "number of parallel connections"],
         [ 'script|s=s', "script to execute on server", { required => 1 } ],
         [
             'resultfile|r=s',
