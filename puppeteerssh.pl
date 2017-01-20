@@ -25,12 +25,13 @@ our $VERSION = 0.3;
 use Net::OpenSSH;
 use File::Slurp 'read_file';
 use Parallel::ForkManager;
+use Carp 'croak';
 
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use PuppeteerSSH::Cli 0.2;
 use PuppeteerSSH::SSH 0.3;
-use Carp 'croak';
+use PuppeteerSSH::Util 0.1;
 
 
 my $params = PuppeteerSSH::Cli::getCliParams();
@@ -73,16 +74,9 @@ foreach my $server (@serverArray) {
 }
 
 $pm->wait_all_children();
-mergeFiles( \@tmpFilePaths );
+PuppeteerSSH::Util::mergeFiles( \@tmpFilePaths );
 
 exit;
 
-sub mergeFiles {
-    my ($tmpFilePaths) = @_;
-    my $filesToMerge = join ' ', @$tmpFilePaths;
-    my $ts = time();
-    `cat $filesToMerge > merged_result_$ts`;
-    unlink for (@$tmpFilePaths);
-}
 
 
