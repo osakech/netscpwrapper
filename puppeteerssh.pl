@@ -12,7 +12,7 @@
 #         BUGS: ---
 #        NOTES: ---
 #       AUTHOR: Alexandros Kechagias (osakech@gmail.com),
-#      VERSION: 0.2
+#      VERSION: 0.3
 #      CREATED: 22.10.2016 20:35:17
 #===============================================================================
 
