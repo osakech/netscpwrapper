@@ -16,16 +16,16 @@ use warnings;
 use FindBin;
 use Test::More;
 
-use lib "$FindBin::Bin/../../lib/";
+use lib "$FindBin::Bin/../../../lib/";
 
 $ARGV[0] = '--gdsh=test';
 $ARGV[1] = '--destination=/tmp';
 $ARGV[2] = '--script=/tmp/test.pl';
 $ARGV[3] = '--resultfile=/tmp/data_to_collect';
 
-use Cli;
+use PuppeteerSSH::Cli;
 
-my $gotConfig = Cli::getCliParams();
+my $gotConfig = PuppeteerSSH::Cli::getCliParams();
 
 my $expectedConfig = {
     gdsh => 'test',

@@ -1,35 +1,21 @@
 #
 #===============================================================================
 #
-#         FILE: 030_setCliParams.t
+#         FILE: 010_load.t
 #
 #       AUTHOR: Alexandros Kechagias (), osakech@gmail.com
 #      VERSION: 1.0
-#      CREATED: 26.10.2016 00:27:56
+#      CREATED: 25.10.2016 23:35:37
 #===============================================================================
 
 use strict;
 use warnings;
 
 use Test::More skip_all => 'not used atm';                      # last test to print
-use FindBin;
 
+use FindBin;
 use lib "$FindBin::Bin/../../lib";
 
-use Cfg;
-my $cliParams = { a => 'test' };
-my $cfg = Cfg->new( $cliParams );
-
-my $gotCfg = $cfg->_setCliParams();
-
-my $expectedCfg = {
-    params => {
-        a => 'test'
-    },
-    config => {
-        a => 'test'
-    }
-};
-
-is_deeply($gotCfg,$expectedCfg, 'params get copied into config attribute');
+require_ok('PuppeteerSSH::Cfg');
+use_ok('PuppeteerSSH::Cfg');
 

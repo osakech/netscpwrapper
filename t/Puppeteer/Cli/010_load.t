@@ -11,11 +11,11 @@
 use strict;
 use warnings;
 
-use Test::More skip_all => 'not used atm';                      # last test to print
+use Test::More tests=> 2;# last test to print
 
 use FindBin;
-use lib "$FindBin::Bin/../../lib";
+use lib "$FindBin::Bin/../../../lib";
 
-require_ok('Cfg');
-use_ok('Cfg');
+require_ok('PuppeteerSSH::Cli');
+use_ok('PuppeteerSSH::Cli');
 
