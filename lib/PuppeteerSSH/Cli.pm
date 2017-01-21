@@ -18,11 +18,9 @@ use warnings;
 
 our $VERSION = '0.2';
 
-use Getopt::Long;
+use Getopt::Long::Descriptive qw(describe_options);
 
 my %opts;
-
-use Getopt::Long::Descriptive qw(describe_options);
  
 sub getCliParams {
     my ( $opt, $usage ) = describe_options(

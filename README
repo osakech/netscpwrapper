@@ -1,1 +1,23 @@
-This is a readme file
+puppeteerssh.pl
+
+I wrote this tool when I needed to connect to multiple ssh servers (>50) and had to execute a rather complicated script which didn' fit in a one liner.
+
+Sytem Requirments
+* I used Perl 5.22 during development
+* SSH client 
+
+Perl modules:
+* Net::OpenSSH;
+* Parallel::ForkManager
+* File::Slurper
+* Getopt::Long::Descriptive
+
+Debian package names:
+* libfile-slurper-perl - Perl SSH client package implemented on top of OpenSSH
+* libgetopt-long-descriptive-perl - module that handles command-line arguments with usage text
+* libparallel-forkmanager-perl - simple parallel processing fork manager for Perl
+* libnet-openssh-perl - Perl SSH client package implemented on top of OpenSSH
+
+Install the dependencies by pasting the following line to your console on debian systems:
+apt-get install libfile-slurper-perl libgetopt-long-descriptive-perl libparallel-forkmanager-perl libnet-openssh-perl
+

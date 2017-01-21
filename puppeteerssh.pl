@@ -22,8 +22,7 @@ use feature 'say';
 
 our $VERSION = 0.3;
 
-use Net::OpenSSH;
-use File::Slurp 'read_file';
+use File::Slurper 'read_lines';
 use Parallel::ForkManager;
 use Carp 'croak';
 
@@ -39,13 +38,13 @@ my $params = PuppeteerSSH::Cli::getCliParams();
 my $dshGroupPath = $ENV{HOME}."/.dsh/group/";
 my $serverpath  = $params->{gfile} || $dshGroupPath.$params->{gdsh};
 
-my @serverArray = read_file( $serverpath );
+my @serverArray = read_lines( $serverpath );
 my $numberOfServers = scalar @serverArray;
 my $numberOfConnections = $params->{'num_connections'} ? $params->{'num_connections'} : $numberOfServers;
 
 say "Number of servers from the configfiles : $numberOfServers";
 say "Number of maximum parallel connections : $numberOfConnections";
-say "Connecting to the following servers :\n" . join "", @serverArray;
+say "Connecting to the following servers :\n" . join "\n", @serverArray;
 
 my $pm = Parallel::ForkManager->new( $numberOfConnections );
 
