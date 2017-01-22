@@ -24,7 +24,7 @@ my %opts;
  
 sub getCliParams {
     my ( $opt, $usage ) = describe_options(
-        'sshFromDshGroups %o <some-arg>',
+        './puppeteerssh %o <some-arg>',
         [
             "groupfile" => hidden => {
                 one_of => [

@@ -1,8 +1,53 @@
 puppeteerssh.pl
 
-I wrote this tool when I needed to connect to multiple ssh servers (>50) and had to execute a rather complicated script which didn' fit in a one liner.
+I wrote this tool when I had to connect to multiple ssh servers (>50), execute 
+a rather big and complicated script and afterwards collect the results on my 
+local machine. The problem was the script didn't fit in a one liner and it was 
+really tough to get the quoting right because it had single quotes, double 
+quotes and a lot of comments, so dsh was not an option. My google fu wasn't
+strong enough either, so I wrote it myself.
 
-Sytem Requirments
+One possible use case:
+Let's say you have the script "demo.sh" and you want to execute it on a group
+of servers (mygroupfile) and then get the resulting file from the server "/tmp/systeminfo".
+In this scenario my ssh key is known on all the servers I am connecting to. 
+
+osakech@mymachine ~/github/puppeteerssh $ ./puppeteerssh.pl --gfile mygroupfile --destination /tmp --script demo.sh --resultfile /tmp/systeminfo
+Number of servers from the configfiles : 2
+Number of maximum parallel connections : 2
+Connecting to the following servers :
+root@localhost:32768
+root@localhost:32769
+
+If the execution is succesfull, you should have a file with the merged output from the different servers:
+osakech@mymachine ~/github/puppeteerssh $ cat merged_result_1485044436
+Linux 1390cae94286 4.4.0-53-generic #74-Ubuntu SMP Fri Dec 2 15:59:10 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+Linux b5adc3b24c6b 4.4.0-53-generic #74-Ubuntu SMP Fri Dec 2 15:59:10 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
+
+
+content if the files:
++----- BEGIN demo.sh -----+
+#!/bin/sh
+uname -a > /tmp/systeminfo
++----- END demo.sh   -----+
+
++----- BEGIN mygroupfile -----+
+alex@myserver1:32768
+alex@myserver2:32769
++----- END groupfile   -----+
+
+
+Command Line Interface
+./puppeteerssh [-dfgnrs] [long options...] <some-arg>
+        -g STR --gdsh STR               dsh group name to use
+        -f STR --gfile STR              path to file with list of servers
+        -d STR --destination STR        path to copy the script on the server
+        -n INT --num-connections INT    number of parallel connections
+        -s STR --script STR             script to execute on server
+        -r STR --resultfile STR         path of result file from server
+        --help                          print usage message and exit
+
+Sytem Requirements
 * I used Perl 5.22 during development
 * SSH client 
 
@@ -13,10 +58,10 @@ Perl modules:
 * Getopt::Long::Descriptive
 
 Debian package names:
-* libfile-slurper-perl - Perl SSH client package implemented on top of OpenSSH
-* libgetopt-long-descriptive-perl - module that handles command-line arguments with usage text
-* libparallel-forkmanager-perl - simple parallel processing fork manager for Perl
-* libnet-openssh-perl - Perl SSH client package implemented on top of OpenSSH
+* libfile-slurper-perl              - Perl SSH client package implemented on top of OpenSSH
+* libgetopt-long-descriptive-perl   - module that handles command-line arguments with usage text
+* libparallel-forkmanager-perl      - simple parallel processing fork manager for Perl
+* libnet-openssh-perl               - Perl SSH client package implemented on top of OpenSSH
 
 Install the dependencies by pasting the following line to your console on debian systems:
 apt-get install libfile-slurper-perl libgetopt-long-descriptive-perl libparallel-forkmanager-perl libnet-openssh-perl

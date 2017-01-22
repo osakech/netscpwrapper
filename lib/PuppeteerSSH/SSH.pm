@@ -18,7 +18,6 @@ package PuppeteerSSH::SSH;
 
 our $VERSION = 0.3;
 
-
 use strict;
 use warnings;
 use feature 'say';
@@ -26,16 +25,16 @@ use Carp 'croak';
 use Readonly;
 
 use Net::OpenSSH;
+use File::Spec;
 
 Readonly my $DEBUG => 0;
-
 
 sub new {
     my $class = shift;
     my ( $server, $port ) = @_;
 
-    my $sshConnection = _getSSHConnection($server,$port);
-    my $self          = {
+    my $sshConnection = _getSSHConnection( $server, $port );
+    my $self = {
         connection => $sshConnection,
         serverName => $server,
     };
@@ -46,7 +45,7 @@ sub new {
 sub _getSSHConnection {
     my ( $server, $port ) = @_;
 
-    my $ssh    = Net::OpenSSH->new($server);
+    my $ssh = Net::OpenSSH->new($server);
     $ssh->error and croak "Couldn't establish SSH connection: " . $ssh->error;
 
     return $ssh;
@@ -66,11 +65,14 @@ sub getFileFromServer {
 sub executeOnServer {
     my $self = shift;
     my ( $copyToDir, $scriptToExecute ) = @_;
+
+    my ( $volume, $directories, $file ) = File::Spec->splitpath($scriptToExecute);
+
     if ($DEBUG) {
         say $$. ' executeOnServer -> copyToDir -> ' . $copyToDir;
-        say $$. ' executeOnServer -> scriptToExecute -> ' . $scriptToExecute;
+        say $$. ' executeOnServer -> scriptToExecute -> ' . $file;
     }
-    $self->{connection}->system( join '/', ( $copyToDir, $scriptToExecute ) );
+    $self->{connection}->system( join '/', ( $copyToDir, $file ) );
 }
 
 sub putFileOnServer {
