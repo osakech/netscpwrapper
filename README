@@ -38,14 +38,16 @@ alex@myserver2:32769
 
 
 Command Line Interface
-./puppeteerssh [-dfgnrs] [long options...] <some-arg>
-        -g STR --gdsh STR               dsh group name to use
-        -f STR --gfile STR              path to file with list of servers
-        -d STR --destination STR        path to copy the script on the server
-        -n INT --num-connections INT    number of parallel connections
-        -s STR --script STR             script to execute on server
-        -r STR --resultfile STR         path of result file from server
-        --help                          print usage message and exit
+./puppeteerssh [-dfgnors] [long options...] <some-arg>
+	-g STR --gdsh STR                dsh group name to use
+	-f STR --gfile STR               path to file with list of servers
+	-d STR --destination STR         path to copy the script on the server
+	-n INT --num-connections INT     number of parallel connections
+	-s STR --script STR              script to execute on server
+	-o STR... --ssh-option STR...    option to pass to ssh, like -o ...
+	                                 -o ...
+	-r STR --resultfile STR          path of result file from server
+	--help                           print usage message and exit
 
 Sytem Requirements
 * I used Perl 5.22 during development
