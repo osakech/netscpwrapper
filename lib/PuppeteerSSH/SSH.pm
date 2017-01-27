@@ -16,7 +16,7 @@
 #===============================================================================
 package PuppeteerSSH::SSH;
 
-our $VERSION = 0.3;
+our $VERSION = 0.4;
 
 use strict;
 use warnings;
@@ -26,47 +26,75 @@ use Readonly;
 
 use Net::OpenSSH;
 use File::Spec;
+use Params::Util '_ARRAY';
 
 Readonly my $DEBUG => 0;
 
 sub new {
     my $class = shift;
-    my ( $server, $port ) = @_;
+    my ( $server, $sshOptions ) = @_;
 
-    my $sshConnection = _getSSHConnection( $server, $port );
+    my %options;
+    $options{ master_opts } = _setsshOptions( $sshOptions );
+    my $sshConnection = _getSSHConnection( $server, \%options );
     my $self = {
         connection => $sshConnection,
         serverName => $server,
+        sshOptions => $sshOptions,
     };
     bless $self, $class;
     return $self;
 }
 
 sub _getSSHConnection {
-    my ( $server, $port ) = @_;
-
-    my $ssh = Net::OpenSSH->new($server);
+    my ( $server, $options ) = @_;
+use Data::Dump 'pp';
+print pp $options;
+    my $ssh = Net::OpenSSH->new( $server, %$options );
     $ssh->error and croak "Couldn't establish SSH connection: " . $ssh->error;
 
     return $ssh;
 }
 
+sub _setsshOptions {
+    my	( $sshOptions )	= @_;
+
+    return unless _ARRAY($sshOptions);
+
+    my @processedSshOptions;
+    foreach my $opt (@$sshOptions){
+        push @processedSshOptions, ('-o' => $opt);
+    }
+#    my %master_opts = ( 'master_opts' => [ @processedSshOptions ] ); 
+
+    return \@processedSshOptions;
+} ## --- end sub _setsshOptions
+
 sub getFileFromServer {
     my $self = shift;
     my ( $copyToDir, $fileToGet ) = @_;
 
-    my $copyLocalPath = join "_", ( $fileToGet, $self->{serverName} );
+    my $copyLocalPath = _getLocalPath($fileToGet,$self->{serverName});
     unlink $copyLocalPath;
     $self->{connection}->scp_get( $fileToGet, $copyLocalPath );
 
     return $copyLocalPath;
 }
 
+
+sub _getLocalPath {
+    my	( $fileToGet,$servername )	= @_;
+
+    croak "not a valid path" unless ($fileToGet && $servername);
+
+    return join "_", ($fileToGet,$servername);
+} ## --- end sub _getLocalPath
+
 sub executeOnServer {
     my $self = shift;
     my ( $copyToDir, $scriptToExecute ) = @_;
 
-    my ( $volume, $directories, $file ) = File::Spec->splitpath($scriptToExecute);
+    my ( undef, undef, $file ) = File::Spec->splitpath($scriptToExecute);
 
     if ($DEBUG) {
         say $$. ' executeOnServer -> copyToDir -> ' . $copyToDir;

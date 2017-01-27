@@ -13,9 +13,9 @@
 #===============================================================================
 use strict;
 use warnings;
-use FindBin;
 use Test::More;
 
+use FindBin;
 use lib "$FindBin::Bin/../../../lib/";
 
 $ARGV[0] = '--gdsh=test';

@@ -56,13 +56,18 @@ Perl modules:
 * Parallel::ForkManager
 * File::Slurper
 * Getopt::Long::Descriptive
+* File::HomeDir
+* Params::Util
+* Test::Exception
 
 Debian package names:
-* libfile-slurper-perl              - Perl SSH client package implemented on top of OpenSSH
+* libfile-slurper-perl              - simple, sane and efficient module to slurp a filed
 * libgetopt-long-descriptive-perl   - module that handles command-line arguments with usage text
 * libparallel-forkmanager-perl      - simple parallel processing fork manager for Perl
 * libnet-openssh-perl               - Perl SSH client package implemented on top of OpenSSH
+* libfile-homedir-perl              - Perl module for finding user directories across platforms
+* libparams-util-perl               - Perl extension for simple stand-alone param checking functions
+* libtest-exception-perl            - module for testing exception-based code
 
 Install the dependencies by pasting the following line to your console on debian systems:
-apt-get install libfile-slurper-perl libgetopt-long-descriptive-perl libparallel-forkmanager-perl libnet-openssh-perl
-
+apt-get install libfile-homedir-perl libfile-slurper-perl libgetopt-long-descriptive-perl libparallel-forkmanager-perl libnet-openssh-perl libtest-exception-perl libparams-util-perl

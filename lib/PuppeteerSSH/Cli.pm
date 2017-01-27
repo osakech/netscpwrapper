@@ -36,6 +36,7 @@ sub getCliParams {
         [ 'destination|d=s', "path to copy the script on the server", { required => 1 } ],
         [ 'num-connections|n=i', "number of parallel connections"],
         [ 'script|s=s', "script to execute on server", { required => 1 } ],
+        [ 'ssh-option|o=s@', "option to pass to ssh, like -o ... -o ..."],
         [
             'resultfile|r=s',
             "path of result file from server",
