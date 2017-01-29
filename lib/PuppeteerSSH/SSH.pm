@@ -48,8 +48,6 @@ sub new {
 
 sub _getSSHConnection {
     my ( $server, $options ) = @_;
-use Data::Dump 'pp';
-print pp $options;
     my $ssh = Net::OpenSSH->new( $server, %$options );
     $ssh->error and croak "Couldn't establish SSH connection: " . $ssh->error;
 
@@ -65,7 +63,6 @@ sub _setsshOptions {
     foreach my $opt (@$sshOptions){
         push @processedSshOptions, ('-o' => $opt);
     }
-#    my %master_opts = ( 'master_opts' => [ @processedSshOptions ] ); 
 
     return \@processedSshOptions;
 } ## --- end sub _setsshOptions

@@ -61,6 +61,7 @@ Perl modules:
 * File::HomeDir
 * Params::Util
 * Test::Exception
+* Test::File
 
 Debian package names:
 * libfile-slurper-perl              - simple, sane and efficient module to slurp a filed
@@ -70,6 +71,7 @@ Debian package names:
 * libfile-homedir-perl              - Perl module for finding user directories across platforms
 * libparams-util-perl               - Perl extension for simple stand-alone param checking functions
 * libtest-exception-perl            - module for testing exception-based code
+* libtest-file-perl                 - Perl module to test file attributes
 
 Install the dependencies by pasting the following line to your console on debian systems:
-apt-get install libfile-homedir-perl libfile-slurper-perl libgetopt-long-descriptive-perl libparallel-forkmanager-perl libnet-openssh-perl libtest-exception-perl libparams-util-perl
+apt-get install libfile-homedir-perl libfile-slurper-perl libgetopt-long-descriptive-perl libparallel-forkmanager-perl libnet-openssh-perl libtest-exception-perl libparams-util-perl libtest-file-perl

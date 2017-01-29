@@ -74,6 +74,7 @@ foreach my $server (@serverArray) {
 }
 
 $pm->wait_all_children();
+
 PuppeteerSSH::Util::mergeFiles( \@tmpFilePaths );
 
 exit;
