@@ -3,7 +3,7 @@
 #
 #         FILE: Groupfiles.pm
 #
-#  DESCRIPTION:
+#  DESCRIPTION: manages the access to groupfiles and returns the contents
 #
 #        FILES: ---
 #         BUGS: ---
@@ -22,6 +22,7 @@ use Carp 'croak';
 
 use File::HomeDir;
 use File::Spec;
+use File::Slurper 'read_lines';
 
 our $VERSION = 0.1;
 
