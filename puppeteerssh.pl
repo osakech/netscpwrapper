@@ -20,32 +20,29 @@ use feature 'say';
 
 our $VERSION = 0.4;
 
-use File::Slurper 'read_lines';
-use File::HomeDir;
 use Parallel::ForkManager;
+use File::Spec;
 use Carp 'croak';
 
 use FindBin;
 use lib "$FindBin::Bin/lib";
 use PuppeteerSSH::Cli 0.2;
 use PuppeteerSSH::SSH 0.4;
-use PuppeteerSSH::Util 0.1;
+use PuppeteerSSH::Util 0.2;
+use PuppeteerSSH::Groupfiles 0.1;
+
+my $cliParams = PuppeteerSSH::Cli::getCliParams();
+
+# move to Groupfiles
+my $inputData = PuppeteerSSH::Groupfiles->new( $cliParams->{gfile}, $cliParams->{gdsh});
+my $serverArray = $inputData->getServers;
 
 
-my $params = PuppeteerSSH::Cli::getCliParams();
-
-my $myhome = File::HomeDir->my_home;
-my $mydsh = '/.dsh/group/r';
-my $dshGroupPath = $myhome . $mydsh ;
-my $serverpath  = $params->{gfile} || $dshGroupPath.$params->{gdsh};
-
-my @serverArray = read_lines( $serverpath );
-my $numberOfServers = scalar @serverArray;
-my $numberOfConnections = $params->{'num_connections'} ? $params->{'num_connections'} : $numberOfServers;
-
+my $numberOfServers = scalar @$serverArray;
+my $numberOfConnections = $cliParams->{'num_connections'} ? $cliParams->{'num_connections'} : $numberOfServers;
 say "Number of servers from the configfiles : $numberOfServers";
 say "Number of maximum parallel connections : $numberOfConnections";
-say "Connecting to the following servers :\n" . join "\n", map { " * ".$_ } @serverArray;
+say "Connecting to the following servers :\n" . join "\n", map { " * ".$_ } @$serverArray;
 
 my $pm = Parallel::ForkManager->new( $numberOfConnections );
 
@@ -62,14 +59,13 @@ $pm->run_on_finish(    # called BEFORE the first call to start()
 );
 
 DATA_LOOP:
-foreach my $server (@serverArray) {
+foreach my $server (@$serverArray) {
     $pm->start() and next DATA_LOOP;
     chomp $server;
-    my $sshConnection = PuppeteerSSH::SSH->new( $server, $params->{ssh_option} ) or croak "Couldn't connect to server $server";
-    $sshConnection->putFileOnServer( $params->{destination}, $params->{script});
-    $sshConnection->executeOnServer( $params->{destination}, $params->{script});
-    my $copiedTo = $sshConnection->getFileFromServer( $params->{destination}, $params->{resultfile} );
-
+    my $sshConnection = PuppeteerSSH::SSH->new( $server, $cliParams->{ssh_option} ) or croak "Couldn't connect to server $server";
+    $sshConnection->putFileOnServer( $cliParams->{destination}, $cliParams->{script});
+    $sshConnection->executeOnServer( $cliParams->{destination}, $cliParams->{script});
+    my $copiedTo = $sshConnection->getFileFromServer( $cliParams->{resultfile} );
     $pm->finish( 0, \$copiedTo );
 }
 

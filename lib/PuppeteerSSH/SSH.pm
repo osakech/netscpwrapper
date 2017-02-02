@@ -26,9 +26,8 @@ use Readonly;
 
 use Net::OpenSSH;
 use File::Spec;
+use File::Temp 'tempfile';
 use Params::Util '_ARRAY';
-
-Readonly my $DEBUG => 0;
 
 sub new {
     my $class = shift;
@@ -69,14 +68,23 @@ sub _setsshOptions {
 
 sub getFileFromServer {
     my $self = shift;
-    my ( $copyToDir, $fileToGet ) = @_;
+    my ( $fileToGet ) = @_;
 
-    my $copyLocalPath = _getLocalPath($fileToGet,$self->{serverName});
-    unlink $copyLocalPath;
-    $self->{connection}->scp_get( $fileToGet, $copyLocalPath );
+#    my $template = _createTempFileTemplate( $self->{serverName} );
+#    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile($template);
+    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile();
 
-    return $copyLocalPath;
+    $self->{connection}->scp_get( File::Spec->canonpath($fileToGet), $copyLocalTempPath );
+    $copyLocalTempFH->flush();
+
+    return $copyLocalTempPath;
 }
+
+sub _createTempFileTemplate {
+    my	( $servername )	= @_;
+    $servername //= '';
+    return 'puppeteer_' . $servername . '_XXXXXXXX';
+} ## --- end sub _createTempFileTemplate
 
 
 sub _getLocalPath {
@@ -93,35 +101,13 @@ sub executeOnServer {
 
     my ( undef, undef, $file ) = File::Spec->splitpath($scriptToExecute);
 
-    if ($DEBUG) {
-        say $$. ' executeOnServer -> copyToDir -> ' . $copyToDir;
-        say $$. ' executeOnServer -> scriptToExecute -> ' . $file;
-    }
-    $self->{connection}->system( join '/', ( $copyToDir, $file ) );
+    $self->{connection}->system( File::Spec->catfile( $copyToDir, $file ) );
 }
 
 sub putFileOnServer {
     my $self = shift;
     my ( $copyToDir, $scriptToExecute ) = @_;
-    if ($DEBUG) {
-        say $$. ' putFileOnServer -> copyToDir -> ' . $copyToDir;
-        say $$. ' putFileOnServer -> scriptToExecute -> ' . $scriptToExecute;
-    }
-    $self->{connection}->scp_put( $scriptToExecute, $copyToDir );
+    $self->{connection}->scp_put( File::Spec->canonpath($scriptToExecute), File::Spec->canonpath($copyToDir) );
 }
 
-#sub executeOnServerAndPipe{
-#    my($server,$copyToDir,$scriptToExecute) = @_;
-#    my $ssh = Net::OpenSSH->new($server);
-#    $ssh->error and die "Couldn't establish SSH connection: ". $ssh->error;
-#    my ($rout, $err) = $ssh->pipe_out(join '/', ($copyToDir,$scriptToExecute) );
-#    $ssh->error and die "remote command failed: " . $ssh->error;
-#    my @dataRows;
-#    while (<$rout>) {
-#        push @dataRows , $_;
-#    }
-#    close $rout;
-#    return \@dataRows;
-#
-#}
 1;

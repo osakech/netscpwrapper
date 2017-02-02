@@ -26,6 +26,6 @@ use lib "$FindBin::Bin/../../../lib/";
 use PuppeteerSSH::Util;
 
 
-#PuppeteerSSH::Util::mergeFiles();
+PuppeteerSSH::Util::mergeFiles();
 
 
