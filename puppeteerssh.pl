@@ -68,7 +68,7 @@ foreach my $server (@$serverArray) {
 
 $pm->wait_all_children();
 
-PuppeteerSSH::Util::mergeFiles( \@tmpFilePaths );
+PuppeteerSSH::Util::mergeFiles( \@tmpFilePaths, $cliParams->{localname}, $cliParams->{timestamped});
 
 exit;
 
