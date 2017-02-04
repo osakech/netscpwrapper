@@ -21,8 +21,6 @@ use feature 'say';
 our $VERSION = 0.4;
 
 use Parallel::ForkManager;
-use File::Spec;
-use Carp 'croak';
 
 use FindBin;
 use lib "$FindBin::Bin/lib";
@@ -59,7 +57,7 @@ DATA_LOOP:
 foreach my $server (@$serverArray) {
     $pm->start() and next DATA_LOOP;
     chomp $server;
-    my $sshConnection = PuppeteerSSH::SSH->new( $server, $cliParams->{ssh_option} ) or croak "Couldn't connect to server $server";
+    my $sshConnection = PuppeteerSSH::SSH->new( $server, $cliParams->{ssh_option} );
     $sshConnection->putFileOnServer( $cliParams->{destination}, $cliParams->{script} );
     $sshConnection->executeOnServer( $cliParams->{destination}, $cliParams->{script} );
     my $copiedTo = $sshConnection->getFileFromServer( $cliParams->{resultfile} );
