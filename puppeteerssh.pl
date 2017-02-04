@@ -28,7 +28,7 @@ use FindBin;
 use lib "$FindBin::Bin/lib";
 use PuppeteerSSH::Cli 0.2;
 use PuppeteerSSH::SSH 0.4;
-use PuppeteerSSH::Util 0.2;
+use PuppeteerSSH::MergeFiles 0.2;
 use PuppeteerSSH::Groupfiles 0.1;
 
 my $cliParams = PuppeteerSSH::Cli::getCliParams();
@@ -68,7 +68,7 @@ foreach my $server (@$serverArray) {
 
 $pm->wait_all_children();
 
-PuppeteerSSH::Util::mergeFiles( \@tmpFilePaths, $cliParams->{localname}, $cliParams->{timestamped});
+PuppeteerSSH::MergeFiles::mergeFiles( \@tmpFilePaths, $cliParams->{localname}, $cliParams->{timestamped});
 
 exit;
 

@@ -23,9 +23,9 @@ use Test::More skip_all => 'TODO:_mergeFiles';                      # last test 
 use FindBin;
 use lib "$FindBin::Bin/../../../lib/";
 
-use PuppeteerSSH::Util;
+use PuppeteerSSH::MergeFiles;
 
 
-PuppeteerSSH::Util::mergeFiles();
+PuppeteerSSH::MergeFiles::mergeFiles();
 
 

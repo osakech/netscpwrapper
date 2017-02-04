@@ -16,7 +16,7 @@ use File::Slurper 'read_text';
 use FindBin;
 use lib "$FindBin::Bin/../../../lib/";
 
-use PuppeteerSSH::Util;
+use PuppeteerSSH::MergeFiles;
 
 $| = 1;
 
@@ -31,7 +31,7 @@ $gotInputFh2->flush();
 
 my $tmpFiles = [ $gotInputFilepath1, $gotInputFilepath2 ];
 
-PuppeteerSSH::Util::_concatFiles( $gotResultFilepath3, $tmpFiles );
+PuppeteerSSH::MergeFiles::_concatFiles( $gotResultFilepath3, $tmpFiles );
 
 my $gotText = read_text($gotResultFilepath3);
 

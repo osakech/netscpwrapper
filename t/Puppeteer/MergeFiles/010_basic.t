@@ -23,6 +23,6 @@ use Test::More tests => 2;                      # last test to print
 use FindBin;
 use lib "$FindBin::Bin/../../../lib/";
 
-require_ok ('PuppeteerSSH::Util');
-use_ok ('PuppeteerSSH::Util');
+require_ok ('PuppeteerSSH::MergeFiles');
+use_ok ('PuppeteerSSH::MergeFiles');
 

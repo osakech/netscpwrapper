@@ -9,7 +9,7 @@
 #      VERSION: 0.1
 #      CREATED: 01/20/2017 04:36:24 PM
 #===============================================================================
-package PuppeteerSSH::Util;
+package PuppeteerSSH::MergeFiles;
 
 our $VERSION = '0.2';
 

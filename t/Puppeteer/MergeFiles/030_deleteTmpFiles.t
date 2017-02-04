@@ -18,12 +18,12 @@ use File::Temp 'tempfile';
 use FindBin;
 use lib "$FindBin::Bin/../../../lib/";
 
-use PuppeteerSSH::Util;
+use PuppeteerSSH::MergeFiles;
 
 my ( undef, $tmpfile1 ) = tempfile();
 
 file_exists_ok($tmpfile1,'temp file exists');
 my $tmpFiles = [$tmpfile1];
-PuppeteerSSH::Util::_deleteTmpFiles($tmpFiles);
+PuppeteerSSH::MergeFiles::_deleteTmpFiles($tmpFiles);
 file_not_exists_ok($tmpfile1,'temp file succesfully deleted');
 
