@@ -48,5 +48,21 @@ sub _incrFilename {
     return $filename;
 } ## --- end sub _incrFilename
 
+
+sub _getNextFilename {
+    my ($filename) = @_;
+
+    unless(_isIncrFilename($filename)){
+        $filename = _initIncrFilename($filename);
+    }
+
+    if ( -e $filename ) {
+        $filename = _incrFilename($filename);
+    } else {
+        return $filename;
+    }
+    _getNextFilename($filename);
+}    ## --- end sub _getNextFilename
+
 1;
 

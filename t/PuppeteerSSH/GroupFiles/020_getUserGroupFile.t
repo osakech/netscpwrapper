@@ -51,3 +51,5 @@ dies_ok{ PuppeteerSSH::Groupfiles::_getUserGroupFile($notReadableFilePath)} 'die
 $tmpdir = tempdir( CLEANUP => 1 );
 dies_ok{ PuppeteerSSH::Groupfiles::_getUserGroupFile($tmpdir)} 'die if file specified but is directory';
 
+File::Temp::cleanup();
+

@@ -34,3 +34,5 @@ is_deeply( $gotServers, $expectedServers, 'user provided group file returned cor
 $gotServers = PuppeteerSSH::Groupfiles::_generateServerList( undef, $tempfilePATH );
 is_deeply( $gotServers, $expectedServers, 'dsh group file returned correctly' );
 
+File::Temp::cleanup();
+

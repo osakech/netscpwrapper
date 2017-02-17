@@ -37,3 +37,5 @@ my $gotText = read_text($gotResultFilepath3);
 
 is($gotText, "a\nb\n",'contents files are concatinated');
 
+File::Temp::cleanup();
+

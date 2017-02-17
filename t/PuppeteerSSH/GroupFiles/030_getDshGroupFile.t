@@ -99,3 +99,6 @@ chmod '077', $notReadableFilePath;
 $PuppeteerSSH::Groupfiles::setUserPathForTesting   = '';
 $PuppeteerSSH::Groupfiles::setGlobalPathForTesting = $notReadableFilePath;
 dies_ok { PuppeteerSSH::Groupfiles::_getDshGroupFile( 'dummy') } 'die if dsh system file isn\'t readable';
+
+File::Temp::cleanup();
+

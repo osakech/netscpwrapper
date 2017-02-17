@@ -27,3 +27,4 @@ my $tmpFiles = [$tmpfile1];
 PuppeteerSSH::MergeFiles::_deleteTmpFiles($tmpFiles);
 file_not_exists_ok($tmpfile1,'temp file succesfully deleted');
 
+File::Temp::cleanup();
