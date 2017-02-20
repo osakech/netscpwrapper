@@ -16,7 +16,7 @@ package PuppeteerSSH::Cli;
 use strict;
 use warnings;
 
-our $VERSION = '0.2';
+our $VERSION = '0.3';
 
 use Getopt::Long::Descriptive qw(describe_options);
 
@@ -27,7 +27,20 @@ sub getCliParams {
         './puppeteerssh %o <some-arg>',
         [
             "groupfile" => hidden => {
-                one_of => [ [ 'gdsh|g=s', "dsh group name to use" ], [ 'gfile|f=s', "path to file with list of servers" ], ]
+                one_of => 
+                [ 
+                    [ 'gdsh|g=s', "dsh group name to use" ], 
+                    [ 'gfile|f=s', "path to file with list of servers" ], 
+                ]
+            }
+        ],
+        [
+            "outputformat" => hidden => {
+                one_of => 
+                [ 
+                    [ 'timestamped|t', "adds timestamp as suffix to the resultfile like: somename_1487418208" ], 
+                    [ 'increment|i', "adds incrementing number as suffix if file already exists like: somename_000001 ..2 ..3" ], 
+                ]
             }
         ],
         [ 'destination|d=s',     "path to copy the script on the server", { required     => 1 } ],
@@ -35,7 +48,6 @@ sub getCliParams {
         [ 'script|s=s',          "script to execute on server",           { required     => 1 } ],
         [ 'ssh-option|o=s@',     "option to pass to ssh, like -o ... -o ..." ],
         [ 'resultfile|r=s',      "path of result file from server",       { required     => 1 } ],
-        [ 'timestamped|i',       "suffix merged file with unix timestamp"],
         [ 'localname|l=s',       "set fixed name and path local result file (default:merged_result)" ],
         [ 'help',                "print usage message and exit",          { shortcircuit => 1 } ],
     );

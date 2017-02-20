@@ -16,6 +16,8 @@
 #===============================================================================
 package PuppeteerSSH::Util::IncrFilename;
 
+our $VERSION = '0.1';
+
 use strict;
 use warnings;
 
@@ -49,7 +51,7 @@ sub _incrFilename {
 } ## --- end sub _incrFilename
 
 
-sub _getNextFilename {
+sub getNextFilename {
     my ($filename) = @_;
 
     unless(_isIncrFilename($filename)){
@@ -61,8 +63,8 @@ sub _getNextFilename {
     } else {
         return $filename;
     }
-    _getNextFilename($filename);
-}    ## --- end sub _getNextFilename
+    getNextFilename($filename);
+}    ## --- end sub getNextFilename
 
 1;
 

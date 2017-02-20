@@ -22,6 +22,7 @@ use PuppeteerSSH::MergeFiles;
 
 my $userFileName = undef;
 my $useTimeStamp = undef;
+my $incrFilename = undef;
 my $gotFilename = PuppeteerSSH::MergeFiles::_mergeFileName($userFileName, $useTimeStamp);
 is($gotFilename, 'merged_result', 'default name if nothing is set' );
 
@@ -44,4 +45,17 @@ $userFileName = '';
 $useTimeStamp = 1;
 $gotFilename = PuppeteerSSH::MergeFiles::_mergeFileName($userFileName, $useTimeStamp);
 like($gotFilename, qr/^\d{10}$/, 'only timestamp' );
+
+$userFileName = 'manually_set_name';
+$useTimeStamp = undef;
+$incrFilename = 1;
+$gotFilename = PuppeteerSSH::MergeFiles::_mergeFileName($userFileName, $useTimeStamp,$incrFilename );
+like($gotFilename, qr/^manually_set_name_000001$/, 'incrementation initiated' );
+
+$userFileName = 'manually_set_name';
+$useTimeStamp = 1;
+$incrFilename = 1;
+$gotFilename = PuppeteerSSH::MergeFiles::_mergeFileName($userFileName, $useTimeStamp,$incrFilename );
+like($gotFilename, qr/^manually_set_name_\d{10}_000001$/, 'incrementation initiated + timestamp' );
+
 

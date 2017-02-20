@@ -11,15 +11,16 @@
 #===============================================================================
 package PuppeteerSSH::MergeFiles;
 
-our $VERSION = '0.2';
+our $VERSION = '0.3';
 
 use strict;
 use warnings;
 use Carp qw(carp croak);
+use PuppeteerSSH::Util::IncrFilename;
 
 sub mergeFiles {
-    my ( $tmpFilePaths, $filename, $addTimestamp, $noMerge )       = @_;
-    my $resultfile_file_name = _mergeFileName( $filename, $addTimestamp );
+    my ( $tmpFilePaths, $filename, $addTimestamp, $incrFilename, $noMerge )       = @_;
+    my $resultfile_file_name = _mergeFileName( $filename, $addTimestamp, $incrFilename );
     _concatFiles($resultfile_file_name,$tmpFilePaths);
     #TODO if $nomerge ist set create seperate files with incr number or name of server
     _deleteTmpFiles($tmpFilePaths);
@@ -57,11 +58,15 @@ sub _concatFiles {
 } ## --- end sub _concatFiles
 
 sub _mergeFileName {
-    my	( $filename, $addTimestamp ) = @_;
+    my	( $filename, $addTimestamp, $incrFilename ) = @_;
     my $ts                   = time();
     my $resultfile_file_name .= $filename // 'merged_result';
-    $resultfile_file_name .= ((not $resultfile_file_name)?'':'_' ).$ts if $addTimestamp;
-
+    if($addTimestamp){
+        $resultfile_file_name .= ((not $resultfile_file_name)?'':'_' ).$ts;
+    }
+    if($incrFilename){
+        $resultfile_file_name = PuppeteerSSH::Util::IncrFilename::getNextFilename($resultfile_file_name);
+    }
     return $resultfile_file_name;
 } ## --- end sub _mergeFileName
 
