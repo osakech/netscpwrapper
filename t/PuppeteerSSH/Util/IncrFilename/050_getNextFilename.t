@@ -1,7 +1,7 @@
 #
 #===============================================================================
 #
-#         FILE: 050_getNextFilename.t
+#         FILE: 050getNextFilename.t
 #
 #  DESCRIPTION: 
 #
@@ -29,18 +29,18 @@ use lib "$FindBin::Bin/../../../../lib/";
 use PuppeteerSSH::Util::IncrFilename;
 
 
-can_ok('PuppeteerSSH::Util::IncrFilename', '_getNextFilename');
+can_ok('PuppeteerSSH::Util::IncrFilename', 'getNextFilename');
 
 #continue incrementation
 my ($fh, $filename) = tempfile( "tmpfileXXXXXX", SUFFIX => '_000003', TMPDIR => 1 );
 $fh->flush();
-my $gotNextFilename = PuppeteerSSH::Util::IncrFilename::_getNextFilename($filename);
+my $gotNextFilename = PuppeteerSSH::Util::IncrFilename::getNextFilename($filename);
 like($gotNextFilename,qr/tmpfile.{6}_000004$/,'normal use case');
 
 #init incrementation
 ($fh, $filename) = tempfile( "tmpfileXXXXXX", TMPDIR => 1 );
 $fh->flush();
-$gotNextFilename = PuppeteerSSH::Util::IncrFilename::_getNextFilename($filename);
+$gotNextFilename = PuppeteerSSH::Util::IncrFilename::getNextFilename($filename);
 like($gotNextFilename,qr/tmpfile.{6}_000001$/,'init incrementation');
 
 my $tmpdir = File::Spec->tmpdir();
@@ -53,7 +53,7 @@ unlink($tmpdir."/testfile_000004");
 POSIX::creat($tmpdir."/testfile_000001","0611");
 POSIX::creat($tmpdir."/testfile_000002","0611");
 POSIX::creat($tmpdir."/testfile_000003","0611");
-$gotNextFilename = PuppeteerSSH::Util::IncrFilename::_getNextFilename($tmpdir.'/testfile');
+$gotNextFilename = PuppeteerSSH::Util::IncrFilename::getNextFilename($tmpdir.'/testfile');
 like($gotNextFilename,qr/testfile_000004$/,'continue incrementation with existing files');
 unlink($tmpdir."/testfile_000001");
 unlink($tmpdir."/testfile_000002");
@@ -67,7 +67,7 @@ unlink($tmpdir."/testfile_000002");
 unlink($tmpdir."/testfile_000003");
 POSIX::creat($tmpdir."/testfile_000001","0611");
 POSIX::creat($tmpdir."/testfile_000003","0611");
-$gotNextFilename = PuppeteerSSH::Util::IncrFilename::_getNextFilename($tmpdir.'/testfile');
+$gotNextFilename = PuppeteerSSH::Util::IncrFilename::getNextFilename($tmpdir.'/testfile');
 like($gotNextFilename,qr/testfile_000002$/,'continue incrementation after lowest suffix value');
 unlink($tmpdir."/testfile_000001");
 unlink($tmpdir."/testfile_000002");

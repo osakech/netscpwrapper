@@ -13,7 +13,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;                      # last test to print
+use Test::More tests => 7;                      # last test to print
 
 use FindBin;
 use lib "$FindBin::Bin/../../../lib/";
