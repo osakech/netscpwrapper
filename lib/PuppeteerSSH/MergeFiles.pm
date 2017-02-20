@@ -19,26 +19,27 @@ use Carp qw(carp croak);
 use PuppeteerSSH::Util::IncrFilename;
 
 sub mergeFiles {
-    my ( $tmpFilePaths, $filename, $addTimestamp, $incrFilename, $noMerge )       = @_;
+    my ( $tmpFilePaths, $filename, $addTimestamp, $incrFilename, $noMerge ) = @_;
     my $resultfile_file_name = _mergeFileName( $filename, $addTimestamp, $incrFilename );
-    _concatFiles($resultfile_file_name,$tmpFilePaths);
+    _concatFiles( $resultfile_file_name, $tmpFilePaths );
+
     #TODO if $nomerge ist set create seperate files with incr number or name of server
     _deleteTmpFiles($tmpFilePaths);
     return;
 }
 
 sub _deleteTmpFiles {
-    my	( $tmpFilePaths )	= @_;
+    my ($tmpFilePaths) = @_;
 
-    foreach my $file ( @$tmpFilePaths) {
+    foreach my $file (@$tmpFilePaths) {
         unlink $file or carp "Could not unlink $file: $!";
     }
 
     return;
-} ## --- end sub _deleteTmpFiles
+}    ## --- end sub _deleteTmpFiles
 
 sub _concatFiles {
-    my	( $resultfile_file_name, $tmpFilePaths ) = @_;
+    my ( $resultfile_file_name, $tmpFilePaths ) = @_;
     open my $resultfile, '>', $resultfile_file_name
       or croak "$0 : failed to open  output file '$resultfile_file_name' : $!\n";
     foreach my $tmpFile_file_name (@$tmpFilePaths) {
@@ -54,21 +55,21 @@ sub _concatFiles {
     }
     close $resultfile
       or carp "$0 : failed to close output file '$resultfile_file_name' : $!\n";
-    return ;
-} ## --- end sub _concatFiles
+    return;
+}    ## --- end sub _concatFiles
 
 sub _mergeFileName {
-    my	( $filename, $addTimestamp, $incrFilename ) = @_;
-    my $ts                   = time();
+    my ( $filename, $addTimestamp, $incrFilename ) = @_;
+    my $ts = time();
     my $resultfile_file_name .= $filename // 'merged_result';
-    if($addTimestamp){
-        $resultfile_file_name .= ((not $resultfile_file_name)?'':'_' ).$ts;
+    if ($addTimestamp) {
+        $resultfile_file_name .= ( ( not $resultfile_file_name ) ? '' : '_' ) . $ts;
     }
-    if($incrFilename){
+    if ($incrFilename) {
         $resultfile_file_name = PuppeteerSSH::Util::IncrFilename::getNextFilename($resultfile_file_name);
     }
     return $resultfile_file_name;
-} ## --- end sub _mergeFileName
+}    ## --- end sub _mergeFileName
 
 1;
 
