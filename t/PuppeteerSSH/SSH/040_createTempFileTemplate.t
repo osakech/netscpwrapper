@@ -18,7 +18,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;                      # last test to print
+use Test::More tests => 3;                      # last test to print
 
 use FindBin;
 use lib "$FindBin::Bin/../../../lib/";
@@ -31,4 +31,6 @@ like($got,qr/^puppeteer_test_XXXXXXXX$/,'template correctly created');
 $got = PuppeteerSSH::SSH::_createTempFileTemplate();
 like($got,qr/^puppeteer__XXXXXXXX$/,'template correctly created with undef input'); # this shouldn't happen
 
+$got = PuppeteerSSH::SSH::_createTempFileTemplate('root:&/_%$%§"$"§^\\/@testserver.com:66');
+like($got,qr/^puppeteer_\Q_root:&/_%$%§"$"§^\\/@testserver.com:66_\EXXXXXXXX$/,'template correctly created with undef input'); # this shouldn't happen
 

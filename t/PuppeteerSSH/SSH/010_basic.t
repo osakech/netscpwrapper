@@ -15,11 +15,10 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;                      # last test to print
+use Test::More tests => 1;                      # last test to print
 
 use FindBin;
 use lib "$FindBin::Bin/../../../lib/";
 
 require_ok('PuppeteerSSH::SSH');
-use_ok('PuppeteerSSH::SSH');
 

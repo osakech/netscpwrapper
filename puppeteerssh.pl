@@ -18,20 +18,22 @@ use strict;
 use warnings;
 use feature 'say';
 
-our $VERSION = 0.4;
+return 1 if caller();
+
+our $VERSION = 0.5;
 
 use Parallel::ForkManager;
 
 use FindBin;
 use lib "$FindBin::Bin/lib";
-use PuppeteerSSH::Cli 0.2;
+use PuppeteerSSH::Cli 0.3;
 use PuppeteerSSH::SSH 0.4;
-use PuppeteerSSH::MergeFiles 0.2;
+use PuppeteerSSH::MergeFiles 0.3;
+use PuppeteerSSH::CopyFiles 0.1;
 use PuppeteerSSH::Groupfiles 0.1;
 
 my $cliParams = PuppeteerSSH::Cli::getCliParams();
 
-# move to Groupfiles
 my $inputData = PuppeteerSSH::Groupfiles->new( $cliParams->{gfile}, $cliParams->{gdsh} );
 my $serverArray = $inputData->getServers;
 
@@ -66,7 +68,10 @@ foreach my $server (@$serverArray) {
 
 $pm->wait_all_children();
 
-PuppeteerSSH::MergeFiles::mergeFiles( \@tmpFilePaths, $cliParams->{localname}, $cliParams->{timestamped}, $cliParams->{increment});
-
+if ( $cliParams->{no_merge} ) {
+    PuppeteerSSH::CopyFiles::copyFiles( \@tmpFilePaths, $cliParams->{localname}, $cliParams->{timestamped}, $cliParams->{increment} );
+} else {
+    PuppeteerSSH::MergeFiles::mergeFiles( \@tmpFilePaths, $cliParams->{localname}, $cliParams->{timestamped}, $cliParams->{increment} );
+}
 exit;
 

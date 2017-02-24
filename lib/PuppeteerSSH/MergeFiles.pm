@@ -1,9 +1,9 @@
 #
 #===============================================================================
 #
-#         FILE: Util.pm
+#         FILE: MergeFiles.pm
 #
-#  DESCRIPTION: miscellaneous stuff
+#  DESCRIPTION: This is the play where we merge files
 #
 #       AUTHOR: Alexandros Kechagias (), osakech@gmail.com
 #      VERSION: 0.1
@@ -16,7 +16,7 @@ our $VERSION = '0.3';
 use strict;
 use warnings;
 use Carp qw(carp croak);
-use PuppeteerSSH::Util::IncrFilename;
+use PuppeteerSSH::Util::IncrFilename 0.1;
 
 sub mergeFiles {
     my ( $tmpFilePaths, $filename, $addTimestamp, $incrFilename, $noMerge ) = @_;

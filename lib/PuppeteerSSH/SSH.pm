@@ -70,9 +70,9 @@ sub getFileFromServer {
     my $self = shift;
     my ( $fileToGet ) = @_;
 
-#    my $template = _createTempFileTemplate( $self->{serverName} );
-#    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile($template);
-    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile();
+    my $template = _createTempFileTemplate( $self->{serverName} );
+    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile($template);
+#    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile();
 
     $self->{connection}->scp_get( File::Spec->canonpath($fileToGet), $copyLocalTempPath );
     $copyLocalTempFH->flush();

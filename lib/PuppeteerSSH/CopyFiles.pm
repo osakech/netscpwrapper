@@ -1,17 +1,26 @@
 #
 #===============================================================================
 #
-#         FILE: 020_getConfig.t
+#         FILE: CopyFiles.pm
 #
+#  DESCRIPTION: 
+#
+#        FILES: ---
+#         BUGS: ---
+#        NOTES: ---
 #       AUTHOR: Alexandros Kechagias (), osakech@gmail.com
+# ORGANIZATION: 
 #      VERSION: 1.0
-#      CREATED: 25.10.2016 23:47:45
+#      CREATED: 02/22/2017 05:03:02 PM
+#     REVISION: ---
 #===============================================================================
+package PuppeteerSSH::CopyFiles;
+
+our $VERSION = 0.1;
 
 use strict;
 use warnings;
 
-use Test::More skip_all => 'not used atm';                      # last test to print
 
-
+1;
 
