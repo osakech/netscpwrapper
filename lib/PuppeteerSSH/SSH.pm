@@ -71,7 +71,7 @@ sub getFileFromServer {
     my ( $fileToGet ) = @_;
 
     my $template = _createTempFileTemplate( $self->{serverName} );
-    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile($template);
+    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile($template, TMPDIR => 1 );
 #    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile();
 
     $self->{connection}->scp_get( File::Spec->canonpath($fileToGet), $copyLocalTempPath );
@@ -85,7 +85,6 @@ sub _createTempFileTemplate {
     $servername //= '';
     return 'puppeteer_' . $servername . '_XXXXXXXX';
 } ## --- end sub _createTempFileTemplate
-
 
 sub _getLocalPath {
     my	( $fileToGet,$servername )	= @_;
