@@ -1,7 +1,7 @@
 #
 #===============================================================================
 #
-#         FILE: CopyFiles.pm
+#         FILE: 020_mergeFiles.t
 #
 #  DESCRIPTION: 
 #
@@ -11,16 +11,21 @@
 #       AUTHOR: Alexandros Kechagias (), osakech@gmail.com
 # ORGANIZATION: 
 #      VERSION: 1.0
-#      CREATED: 02/22/2017 05:03:02 PM
+#      CREATED: 01/28/2017 12:33:43 PM
 #     REVISION: ---
 #===============================================================================
-package PuppeteerSSH::CopyFiles;
-
-our $VERSION = 0.1;
 
 use strict;
 use warnings;
 
+use Test::More skip_all => 'TODO:_mergeFiles';                      # last test to print
 
-1;
+use FindBin;
+use lib "$FindBin::Bin/../../../lib/";
+
+use PuppeteerSSH::Resultfiles;
+
+
+PuppeteerSSH::Resultfiles::mergeFiles();
+
 

@@ -6,7 +6,7 @@
 #  DESCRIPTION: Handles SSH-Connections
 #
 #        FILES: ---
-#         BUG\%config, S: ---
+#         BUGS: ---
 #        NOTES: ---
 #       AUTHOR: Alexandros Kechagias (), osakech@gmail.com
 # ORGANIZATION:
@@ -41,8 +41,17 @@ sub new {
         serverName => $server,
         sshOptions => $sshOptions,
     };
+
     bless $self, $class;
     return $self;
+}
+
+sub getCleanHostline {
+    my $self = shift;
+    my ($server) = @_;
+    $server ||= $self->{serverName};
+    my $splittedServerLine = _parseConnectionString($server);
+    return join '_' , grep {defined} @$splittedServerLine{qw(user ipv6 hostname port)};
 }
 
 sub _getSSHConnection {
@@ -52,6 +61,49 @@ sub _getSSHConnection {
 
     return $ssh;
 }
+
+sub _parseConnectionString {
+    my ($target) = @_;
+
+    # The code is partly stolen from Net::OpenSSH->parse_connection_opts
+    # https://metacpan.org/source/SALVA/Net-OpenSSH-0.74/lib/Net/OpenSSH.pm#L171
+    # I considered calling it directly but since this function isn't mentioned in the documentation
+    # I see it as a private function
+    my $IPv6_re =
+qr((?-xism::(?::[0-9a-fA-F]{1,4}){0,5}(?:(?::[0-9a-fA-F]{1,4}){1,2}|:(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})))|[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}:(?:[0-9a-fA-F]{1,4}|:)|(?::(?:[0-9a-fA-F]{1,4})?|(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))))|:(?:(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|[0-9a-fA-F]{1,4}(?::[0-9a-fA-F]{1,4})?|))|(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|:[0-9a-fA-F]{1,4}(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|(?::[0-9a-fA-F]{1,4}){0,2})|:))|(?:(?::[0-9a-fA-F]{1,4}){0,2}(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|(?::[0-9a-fA-F]{1,4}){1,2})|:))|(?:(?::[0-9a-fA-F]{1,4}){0,3}(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|(?::[0-9a-fA-F]{1,4}){1,2})|:))|(?:(?::[0-9a-fA-F]{1,4}){0,4}(?::(?:(?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2})[.](?:25[0-5]|2[0-4][0-9]|[0-1]?[0-9]{1,2}))|(?::[0-9a-fA-F]{1,4}){1,2})|:))));
+
+    my ( $user, $passwd, $ipv6, $host, $port ) = $target =~ m{^
+                       \s*               # space
+                       (?:
+                         ([^:]+)         # username
+                         (?::(.*))?      # : password
+                         \@              # @
+                       )?
+                       (?:               # host
+                          (              #   IPv6...
+                            \[$IPv6_re(?:\%[^\[\]]*)\] #     [IPv6]
+                            |            #     or
+                            $IPv6_re     #     IPv6
+                          )
+                          |              #   or
+                          ([^\[\]\@:]+)  #   hostname / ipv4
+                       )
+                       (?::([^\@:]+))?   # port
+                       \s*               # space
+                     $}ix
+      or croak "bad host/target '$target' specification";
+
+    wantarray and return ( $user, $passwd, $ipv6, $host, $port );
+
+    return {
+        user     => $user,
+        password => $passwd,
+        ipv6     => $ipv6,
+        hostname => $host,
+        port     => $port
+    };
+}    ## --- end sub _parseConnectionString
+
 
 sub _setsshOptions {
     my	( $sshOptions )	= @_;
@@ -72,7 +124,6 @@ sub getFileFromServer {
 
     my $template = _createTempFileTemplate( $self->{serverName} );
     my ($copyLocalTempFH, $copyLocalTempPath) = tempfile($template, TMPDIR => 1 );
-#    my ($copyLocalTempFH, $copyLocalTempPath) = tempfile();
 
     $self->{connection}->scp_get( File::Spec->canonpath($fileToGet), $copyLocalTempPath );
     $copyLocalTempFH->flush();
