@@ -18,7 +18,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;                      # last test to print
+use Test::More tests => 3;                      # last test to print
 
 use FindBin;
 use lib "$FindBin::Bin/../../../lib/";
@@ -31,4 +31,11 @@ like($got,qr/^puppeteer_test_XXXXXXXX$/,'template correctly created');
 $got = PuppeteerSSH::SSH::_createTempFileTemplate();
 like($got,qr/^puppeteer__XXXXXXXX$/,'template correctly created with undef input'); # this shouldn't happen
 
+my $username = 'root';
+my $password = 'pass';
+my $server = 'testserver.com';
+my $port = 66;
+my $serverLine = $username . ':' . $password . '@' . $server . ':' . $port;
+$got = PuppeteerSSH::SSH::_createTempFileTemplate($serverLine);
+like($got,qr/^puppeteer\_$serverLine\_XXXXXXXX$/,'template correctly created with normal input'); # this shouldn't happen
 

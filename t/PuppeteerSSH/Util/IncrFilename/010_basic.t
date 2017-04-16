@@ -1,7 +1,7 @@
 #
 #===============================================================================
 #
-#         FILE: 020_mergeFiles.t
+#         FILE: 010_basic.t
 #
 #  DESCRIPTION: 
 #
@@ -11,21 +11,19 @@
 #       AUTHOR: Alexandros Kechagias (), osakech@gmail.com
 # ORGANIZATION: 
 #      VERSION: 1.0
-#      CREATED: 01/28/2017 12:33:43 PM
+#      CREATED: 02/11/2017 03:29:03 PM
 #     REVISION: ---
 #===============================================================================
 
 use strict;
 use warnings;
 
-use Test::More skip_all => 'TODO:_mergeFiles';                      # last test to print
+use Test::More tests => 1;                      # last test to print
+
 
 use FindBin;
-use lib "$FindBin::Bin/../../../lib/";
-
-use PuppeteerSSH::Util;
+use lib "$FindBin::Bin/../../../../lib/";
 
 
-PuppeteerSSH::Util::mergeFiles();
-
+require_ok('PuppeteerSSH::Util::IncrFilename');
 

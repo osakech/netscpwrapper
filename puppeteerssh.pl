@@ -10,7 +10,7 @@
 #               and merge the output on your local machine.
 #
 #       AUTHOR: Alexandros Kechagias (osakech@gmail.com),
-#      VERSION: 0.3
+#      VERSION: 0.5
 #      CREATED: 22.10.2016 20:35:17
 #===============================================================================
 
@@ -18,22 +18,21 @@ use strict;
 use warnings;
 use feature 'say';
 
-our $VERSION = 0.4;
+return 1 if caller();
+
+our $VERSION = 0.5;
 
 use Parallel::ForkManager;
-use File::Spec;
-use Carp 'croak';
 
 use FindBin;
 use lib "$FindBin::Bin/lib";
-use PuppeteerSSH::Cli 0.2;
+use PuppeteerSSH::Cli 0.3;
 use PuppeteerSSH::SSH 0.4;
-use PuppeteerSSH::Util 0.2;
+use PuppeteerSSH::Resultfiles 0.3;
 use PuppeteerSSH::Groupfiles 0.1;
 
 my $cliParams = PuppeteerSSH::Cli::getCliParams();
 
-# move to Groupfiles
 my $inputData = PuppeteerSSH::Groupfiles->new( $cliParams->{gfile}, $cliParams->{gdsh} );
 my $serverArray = $inputData->getServers;
 
@@ -46,11 +45,11 @@ say "Connecting to the following servers :\n" . join "\n", map { " * " . $_ } @$
 my $pm = Parallel::ForkManager->new($numberOfConnections);
 
 # data structure retrieval and handling
-my @tmpFilePaths;
+my @tmpResultfileMeta;
 $pm->run_on_finish(    # called BEFORE the first call to start()
     sub {
         my ( $pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference ) = @_;
-        push @tmpFilePaths, $$data_structure_reference
+        push @tmpResultfileMeta, $data_structure_reference
           if ($data_structure_reference);
     }
 );
@@ -59,16 +58,20 @@ DATA_LOOP:
 foreach my $server (@$serverArray) {
     $pm->start() and next DATA_LOOP;
     chomp $server;
-    my $sshConnection = PuppeteerSSH::SSH->new( $server, $cliParams->{ssh_option} ) or croak "Couldn't connect to server $server";
+    my $sshConnection = PuppeteerSSH::SSH->new( $server, $cliParams->{ssh_option} );
     $sshConnection->putFileOnServer( $cliParams->{destination}, $cliParams->{script} );
     $sshConnection->executeOnServer( $cliParams->{destination}, $cliParams->{script} );
-    my $copiedTo = $sshConnection->getFileFromServer( $cliParams->{resultfile} );
-    $pm->finish( 0, \$copiedTo );
+    my $copiedTo       = $sshConnection->getFileFromServer( $cliParams->{resultfile} );
+    my %connectionData = (
+        localTempPath => $copiedTo,                         # TODO use filehandle instead of filename in v0.6
+        cleanHostline => $sshConnection->getCleanHostline,
+    );
+    $pm->finish( 0, \%connectionData );
 }
 
 $pm->wait_all_children();
 
-PuppeteerSSH::Util::mergeFiles( \@tmpFilePaths );
+PuppeteerSSH::Resultfiles::create( \@tmpResultfileMeta, $cliParams->{localname}, $cliParams->{timestamped}, $cliParams->{increment}, $cliParams->{no_merge} );
 
 exit;
 

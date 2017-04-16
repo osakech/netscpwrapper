@@ -1,21 +1,20 @@
 #
 #===============================================================================
 #
-#         FILE: 010_basic.t
+#         FILE: 010_load.t
 #
 #       AUTHOR: Alexandros Kechagias (), osakech@gmail.com
 #      VERSION: 1.0
-#      CREATED: 02/01/2017 02:47:25 PM
+#      CREATED: 25.10.2016 23:35:37
 #===============================================================================
 
 use strict;
 use warnings;
 
-use Test::More tests => 2;                      # last test to print
+use Test::More tests=> 1;# last test to print
 
 use FindBin;
-use lib "$FindBin::Bin/../../../lib/";
+use lib "$FindBin::Bin/../../../lib";
 
-use_ok('PuppeteerSSH::Groupfiles');
-require_ok('PuppeteerSSH::Groupfiles');
+require_ok('PuppeteerSSH::Cli');
 

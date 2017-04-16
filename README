@@ -38,7 +38,7 @@ alex@myserver2:32769
 
 
 Command Line Interface
-./puppeteerssh [-dfgnors] [long options...] <some-arg>
+./puppeteerssh [-dfgilnors] [long options...] <some-arg>
 	-g STR --gdsh STR                dsh group name to use
 	-f STR --gfile STR               path to file with list of servers
 	-d STR --destination STR         path to copy the script on the server
@@ -47,6 +47,10 @@ Command Line Interface
 	-o STR... --ssh-option STR...    option to pass to ssh, like -o ...
 	                                 -o ...
 	-r STR --resultfile STR          path of result file from server
+	-i --timestamped                 suffix merged file with unix
+	                                 timestamp
+	-l STR --localname STR           set fixed name and path local result
+	                                 file (default:merged_result)
 	--help                           print usage message and exit
 
 Sytem Requirements
