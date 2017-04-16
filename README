@@ -38,19 +38,24 @@ alex@myserver2:32769
 
 
 Command Line Interface
-./puppeteerssh [-dfgilnors] [long options...] <some-arg>
+./puppeteerssh [-dfgilmnorst] [long options...] <some-arg>
 	-g STR --gdsh STR                dsh group name to use
 	-f STR --gfile STR               path to file with list of servers
+	-t --timestamped                 adds timestamp as suffix to the
+	                                 resultfile like: somename_1487418208
+	-i --increment                   adds incrementing number as suffix
+	                                 if file already exists like:
+	                                 somename_000001 ..2 ..3
 	-d STR --destination STR         path to copy the script on the server
-	-n INT --num-connections INT     number of parallel connections
+	-n INT --num-connections INT     max number of parallel connections
 	-s STR --script STR              script to execute on server
 	-o STR... --ssh-option STR...    option to pass to ssh, like -o ...
 	                                 -o ...
 	-r STR --resultfile STR          path of result file from server
-	-i --timestamped                 suffix merged file with unix
-	                                 timestamp
 	-l STR --localname STR           set fixed name and path local result
 	                                 file (default:merged_result)
+	-m --no-merge                    don't merge all files into one
+	                                 result file
 	--help                           print usage message and exit
 
 Sytem Requirements
