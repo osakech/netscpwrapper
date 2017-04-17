@@ -1,1 +1,1 @@
-docker stop sx296 sx297 sx299 sx300
+docker stop ssh1 ssh2 ssh3 ssh4

@@ -39,6 +39,7 @@ sub getCliParams {
             }
         ],
         [ 'destination|d=s',     "path to copy the script on the server", { required => 1 } ],
+        [ 'quiet|q',             "quiet mode" ],
         [ 'num-connections|n=i', "max number of parallel connections" ],
         [ 'script|s=s',          "script to execute on server",           { required => 1 } ],
         [ 'ssh-option|o=s@',     "option to pass to ssh, like -o ... -o ..." ],
@@ -46,8 +47,8 @@ sub getCliParams {
         [
             "localresultfile" => hidden => {
                 one_of => [
-                    [ 'localname|l=s', "set fixed name and path local result file (default:merged_result)" ],
-                    [ 'no-merge|m',    "don\'t merge all files into one result file" ],
+                    [ 'localpath|l=s', "set fixed name or path to local result file" ],
+                    [ 'no-merge|m',    "don\'t merge all files into one result file, keep one file per server" ],
                 ]
             }
         ],

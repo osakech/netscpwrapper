@@ -1,1 +1,0 @@
-./puppeteerssh.pl --gfile local_test_files/mygroupfile --destination /tmp --script local_test_files/demo.sh --resultfile /tmp/systeminfo -o 'StrictHostKeyChecking=no' -o 'UserKnownHostsFile=/dev/null' --timestamped

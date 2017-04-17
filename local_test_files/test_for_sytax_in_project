@@ -1,1 +1,0 @@
-find . \( -name "*.t" -o -name "*.pl" -o -name "*.pm" \) -exec perl -c {} \;
