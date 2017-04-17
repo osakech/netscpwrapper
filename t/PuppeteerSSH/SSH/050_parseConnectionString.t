@@ -31,7 +31,7 @@ my $expectedScalarResult = {
     password => 'password',
     ipv6     => undef,
     hostname => 'hostname',
-    post     => 22
+    port     => 22
 };
 
 my $gotScalarResult = PuppeteerSSH::SSH::_parseConnectionString($hostline);
@@ -45,7 +45,7 @@ $expectedScalarResult = {
     password => 'password',
     ipv6     => '2001:4860:4860:0:0:0:0:8888',
     hostname => undef,
-    post     => 22
+    port     => 22
 };
 
 my $gotScalarResult2 = PuppeteerSSH::SSH::_parseConnectionString($hostline);
