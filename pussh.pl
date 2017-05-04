@@ -20,7 +20,7 @@ use feature 'say';
 
 return 1 if caller();
 
-our $VERSION = 0.5;
+our $VERSION = 0.6;
 
 use Parallel::ForkManager;
 
@@ -73,8 +73,15 @@ foreach my $server (@$serverArray) {
 }
 
 $pm->wait_all_children();
+my $resultfileOptions = {
+    localpath   => $cliParams->{localpath},
+    localdir    => $cliParams->{localdir},
+    timestamped => $cliParams->{timestamped},
+    increment   => $cliParams->{increment},
+    no_merge    => $cliParams->{no_merge},
+};
 
-PuppeteerSSH::Resultfiles::create( \@tmpResultfileMeta, $cliParams->{localpath}, $cliParams->{timestamped}, $cliParams->{increment}, $cliParams->{no_merge} );
+PuppeteerSSH::Resultfiles::create( \@tmpResultfileMeta, $resultfileOptions );
 
 exit;
 

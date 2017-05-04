@@ -12,16 +12,13 @@ use strict;
 use warnings;
 
 use Test::More;
-use Test::File; # exactly what i need!
+use Test::File;    # exactly what i need!
 use Test::Exception;
 use File::Temp qw(tempfile tempdir);
 use File::Spec;
 use FindBin;
 use File::Slurper qw(read_lines);
 use Net::OpenSSH;
-
-
-
 
 my $file_temps;
 
@@ -34,45 +31,57 @@ foreach my $line ( read_lines('local_test_files/mygroupfile') ) {
 
 my $tests = {
     'localpath set' => {
-        'opts'  => [ '--localpath', ],
+        'opts'  => [ 
+            '--localpath', 
+        ],
         'tests' => [ 
-            'merged_correct' 
+            'filecontent_looks_like=^ssh session\sssh session\sssh session\sssh session$'
         ],
     },
     'localpath and time timestamp set' => {
-        'opts'  => [ '--localpath', '--timestamped' ],
+        'opts'  => [ 
+            '--localpath',
+            '--timestamped' 
+        ],
         'tests' => [ 
-            'merged_correct', 
+            'filecontent_looks_like=^ssh session\sssh session\sssh session\sssh session$', 
             'filename_looks_like=_\d{10}$', 
         ],
     },
-
     'localpath and increment set' => {
-        'opts'  => [ '--localpath', '--increment' ],
+        'opts'  => [ 
+            '--localpath',
+            '--increment' 
+        ],
         'tests' => [ 
-            'merged_correct', 
+            'filecontent_looks_like=^ssh session\sssh session\sssh session\sssh session$', 
             'filename_looks_like=_000001$', 
         ],
-    }
+    },
+    'localdir and no-merge' => {
+        'opts'  => [ '--localdir',                         '--no-merge' ],
+        'tests' => [ 
+            'filecontent_looks_like=ssh session', 
+            'filename_looks_like=\w+_\w+_\d+$', 
+        ],
+    },
 };
 
+## Please see file perltidy.ERR
 foreach my $testname ( keys %$tests ) {
     subtest $testname => sub {
         my $test           = $tests->{$testname};
         my $mergedTestFile = get_merge_filename();
         my $cmd            = join ' ', ( set_tool_name(), set_fix_opts(), replace_tmpfile_placeholder( $test->{'opts'}, $mergedTestFile ) );
-        lives_ok { system($cmd) and die } ' tool executed succesfully';
+        lives_ok { system($cmd) and die } 'tool executed succesfully';
         foreach my $filetest ( @{ $test->{'tests'} } ) {
-            my ($newname) = glob("$mergedTestFile*");
-            if ( $filetest eq 'merged_correct' ) {
-                file_contains_like(
-                    $newname,
-                    qr/^ssh session\sssh session\sssh session\sssh session$/m,
-                    ' => merged data sucessfully, from at least 4 ssh sessions, in one file'
-                );
-            }
-            if ( $filetest =~ /^filename_looks_like=(.*)/ ) {
-                like( $newname, qr/$1/, " => filename matches $1 " );
+            foreach my $newname ( glob( set_glob_string($mergedTestFile) ) ) {    # TODO use readdir see perlport
+                if ( $filetest =~ /^filename_looks_like=(.*)/ ) {
+                    like( $newname, qr/$1/, " => filename $newname matches regex /$1/ " );
+                }
+                if ( $filetest =~ /^filecontent_looks_like=(.*)/ ) {
+                    file_contains_like( $newname, qr/$1/, " => filecontent of $newname look like regex /$1/" );
+                }
             }
         }
       }
@@ -81,13 +90,14 @@ done_testing();
 exit;
 
 sub get_merge_filename {
-    File::Spec->catfile(tempdir(),'mergedtestfile')
+    File::Spec->catfile( tempdir(), 'testdata' );
 }
 
 sub replace_tmpfile_placeholder {
-    my ($array,$filepath) = @_;
-    foreach my $el (@$array){
+    my ( $array, $filepath ) = @_;
+    foreach my $el (@$array) {
         $el =~ s/(--localpath)/$1 $filepath/;
+        $el =~ s/(--localdir)/$1 $filepath/;
     }
     return @$array;
 }
@@ -96,7 +106,7 @@ sub create_test_script {
     my ( $tscriptfh, $tscriptfn ) = tempfile();
     print $tscriptfh 'if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then echo "ssh session" > /tmp/isSSH; fi';
     $tscriptfh->flush();
-    chmod 777, $tscriptfh;
+    chmod 0777, $tscriptfh;
     return $tscriptfn;
 }
 
@@ -106,12 +116,21 @@ sub set_fix_opts {
       '-o "StrictHostKeyChecking=no"',
       '-o "UserKnownHostsFile=/dev/null"',
       '-o "LogLevel=QUIET"',
-      "--script ".create_test_script(),
+      "--script " . create_test_script(),
       "--gfile local_test_files/mygroupfile",
-      "--quiet"
+      "--quiet";
 }
 
 sub set_tool_name {
-    './pussh.pl'
+    './pussh.pl';
 }
 
+sub set_glob_string {
+    my ($mergeTestFile) = @_;
+    if ( -d $mergeTestFile ) {
+        $mergeTestFile .= '/*';
+    } else {
+        $mergeTestFile .= '*';
+    }
+    return $mergeTestFile;
+}    ## --- end sub set_glob_string

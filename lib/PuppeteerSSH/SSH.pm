@@ -22,7 +22,6 @@ use strict;
 use warnings;
 use feature 'say';
 use Carp 'croak';
-use Readonly;
 
 use Net::OpenSSH;
 use File::Spec;

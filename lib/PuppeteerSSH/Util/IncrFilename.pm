@@ -20,9 +20,11 @@ our $VERSION = '0.1';
 
 use strict;
 use warnings;
+use File::Spec;
 
 sub _isIncrFilename {
     my ($filename) = @_;
+
     if ( $filename and $filename =~ /_\d{6}$/ ) {
         return 1;
     }
@@ -51,6 +53,8 @@ sub _incrFilename {
 
 sub getNextFilename {
     my ($filename) = @_;
+
+    $filename = File::Spec->catfile($filename);
 
     unless ( _isIncrFilename($filename) ) {
         $filename = _initIncrFilename($filename);
