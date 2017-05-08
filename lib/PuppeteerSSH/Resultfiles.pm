@@ -23,7 +23,7 @@ use PuppeteerSSH::Util::IncrFilename 0.1;
 
 sub create {
     my ( $tmpResultfileMeta, $options ) = @_;
-    my $localpath   = $options->{localpath};
+    my $localfile   = $options->{localfile};
     my $localdir    = $options->{localdir};
     my $timestamped = $options->{timestamped};
     my $increment   = $options->{increment};
@@ -33,7 +33,7 @@ sub create {
         $localdir = _mkdirIfPossible($localdir);
         _copyFiles($tmpResultfileMeta, $increment, $timestamped, $localdir);
     } else {
-        my $resultfile_file_name = _getFileName( 'merged_result', $localpath, $timestamped, $increment);
+        my $resultfile_file_name = _getFileName( 'merged_result', $localfile, $timestamped, $increment);
         _concatFiles($resultfile_file_name, $tmpResultfileMeta);
     }
     return;
@@ -88,10 +88,10 @@ sub _concatFiles {
 }    ## --- end sub _concatFiles
 
 sub _getFileName {
-    my ( $defaultname , $localpath, $addTimestamp, $incrFilename ) = @_;
+    my ( $defaultname , $localfile, $addTimestamp, $incrFilename ) = @_;
     my $resultfile_file_name = $defaultname;
-    if ($localpath) {
-        $resultfile_file_name = _setCustomName($resultfile_file_name,$localpath);
+    if ($localfile) {
+        $resultfile_file_name = _setCustomName($resultfile_file_name,$localfile);
     }
     if ($addTimestamp) {
         $resultfile_file_name = _addTimestamp($resultfile_file_name)
@@ -104,8 +104,8 @@ sub _getFileName {
 
 
 sub _setCustomName {
-    my	( $resultfile_file_name,$localpath )	= @_;
-    return $localpath;
+    my	( $resultfile_file_name,$localfile )	= @_;
+    return $localfile;
 } ## --- end sub _setCustomName
 
 sub _addTimestamp {

@@ -74,7 +74,7 @@ foreach my $server (@$serverArray) {
 
 $pm->wait_all_children();
 my $resultfileOptions = {
-    localpath   => $cliParams->{localpath},
+    localfile   => $cliParams->{localfile},
     localdir    => $cliParams->{localdir},
     timestamped => $cliParams->{timestamped},
     increment   => $cliParams->{increment},

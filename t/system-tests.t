@@ -30,17 +30,17 @@ foreach my $line ( read_lines('local_test_files/mygroupfile') ) {
 }
 
 my $tests = {
-    'localpath set' => {
+    'localfile set' => {
         'opts'  => [ 
-            '--localpath', 
+            '--localfile', 
         ],
         'tests' => [ 
             'filecontent_looks_like=^ssh session\sssh session\sssh session\sssh session$'
         ],
     },
-    'localpath and time timestamp set' => {
+    'localfile and time timestamp set' => {
         'opts'  => [ 
-            '--localpath',
+            '--localfile',
             '--timestamped' 
         ],
         'tests' => [ 
@@ -48,9 +48,9 @@ my $tests = {
             'filename_looks_like=_\d{10}$', 
         ],
     },
-    'localpath and increment set' => {
+    'localfile and increment set' => {
         'opts'  => [ 
-            '--localpath',
+            '--localfile',
             '--increment' 
         ],
         'tests' => [ 
@@ -96,7 +96,7 @@ sub get_merge_filename {
 sub replace_tmpfile_placeholder {
     my ( $array, $filepath ) = @_;
     foreach my $el (@$array) {
-        $el =~ s/(--localpath)/$1 $filepath/;
+        $el =~ s/(--localfile)/$1 $filepath/;
         $el =~ s/(--localdir)/$1 $filepath/;
     }
     return @$array;

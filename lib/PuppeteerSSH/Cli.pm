@@ -48,7 +48,7 @@ sub getCliParams {
         [
             "localresultfile" => hidden => {
                 one_of => [
-                    [ 'localpath|l=s', "set path to local result file" ],
+                    [ 'localfile|l=s', "set path to local result file" ],
                     [ 'no-merge|m',    "don\'t merge all files into one result file, keep one file per server" ],
                 ]
             }
