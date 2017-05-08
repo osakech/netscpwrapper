@@ -7,7 +7,7 @@
 #
 #       AUTHOR: Alexandros Kechagias, osakech@gmail.com
 # ORGANIZATION:
-#      VERSION: 0.2
+#      VERSION: 0.5
 #      CREATED: 24.10.2016 19:06:20
 #     REVISION: ---
 #===============================================================================
@@ -16,7 +16,7 @@ package PuppeteerSSH::Cli;
 use strict;
 use warnings;
 
-our $VERSION = '0.3';
+our $VERSION = '0.5';
 
 use Getopt::Long::Descriptive qw(describe_options);
 
@@ -24,7 +24,7 @@ my %opts;
 
 sub getCliParams {
     my ( $opt, $usage ) = describe_options(
-        './puppeteerssh %o <some-arg>',
+        './pussh %o <some-arg>',
         [
             "groupfile" => hidden => {
                 one_of => [ [ 'gdsh|g=s', "dsh group name to use" ], [ 'gfile|f=s', "path to file with list of servers" ], ]
@@ -39,15 +39,17 @@ sub getCliParams {
             }
         ],
         [ 'destination|d=s',     "path to copy the script on the server", { required => 1 } ],
+        [ 'quiet|q',             "quiet mode" ],
         [ 'num-connections|n=i', "max number of parallel connections" ],
         [ 'script|s=s',          "script to execute on server",           { required => 1 } ],
         [ 'ssh-option|o=s@',     "option to pass to ssh, like -o ... -o ..." ],
+        [ 'localdir|c=s',        'set path on local machine for output files' ],
         [ 'resultfile|r=s',      "path of result file from server",       { required => 1 } ],
         [
             "localresultfile" => hidden => {
                 one_of => [
-                    [ 'localname|l=s', "set fixed name and path local result file (default:merged_result)" ],
-                    [ 'no-merge|m',    "don\'t merge all files into one result file" ],
+                    [ 'localfile|l=s', "set path to local result file" ],
+                    [ 'no-merge|m',    "don\'t merge all files into one result file, keep one file per server" ],
                 ]
             }
         ],

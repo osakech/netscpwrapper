@@ -17,14 +17,23 @@ use strict;
 use warnings;
 use Carp qw(carp croak);
 use File::Copy 'copy';
+use File::Spec;
+use File::Path qw(make_path);
 use PuppeteerSSH::Util::IncrFilename 0.1;
 
 sub create {
-    my ( $tmpResultfileMeta, $filename, $addTimestamp, $incrFilename, $noMerge ) = @_;
-    if ($noMerge){
-        _copyFiles($tmpResultfileMeta, $incrFilename, $addTimestamp);
+    my ( $tmpResultfileMeta, $options ) = @_;
+    my $localfile   = $options->{localfile};
+    my $localdir    = $options->{localdir};
+    my $timestamped = $options->{timestamped};
+    my $increment   = $options->{increment};
+    my $no_merge    = $options->{no_merge};
+
+    if ($no_merge){
+        $localdir = _mkdirIfPossible($localdir);
+        _copyFiles($tmpResultfileMeta, $increment, $timestamped, $localdir);
     } else {
-        my $resultfile_file_name = _getFileName( 'merged_result', $filename, $addTimestamp, $incrFilename );
+        my $resultfile_file_name = _getFileName( 'merged_result', $localfile, $timestamped, $increment);
         _concatFiles($resultfile_file_name, $tmpResultfileMeta);
     }
     return;
@@ -41,16 +50,24 @@ sub _deleteTmpFiles {
 }    ## --- end sub _deleteTmpFiles
 
 
-sub _copyFiles {
-    my	( $tmpResultfileMeta , $incrFilename, $addTimestamp)	= @_;
+sub _mkdirIfPossible {
+    my ($localdir) = @_;
+    return unless defined $localdir;
+    croak 'specified path is a file!' if ( -f $localdir );
+    make_path( $localdir ); #TODO error handling
+    return $localdir;
+}    ## --- end sub _mkdirIfPossible
 
+sub _copyFiles {
+    my ( $tmpResultfileMeta, $incrFilename, $addTimestamp, $localdir ) = @_;
     foreach my $tmpFileMeta (@$tmpResultfileMeta) {
-      my $resultfilename = _getFileName( $tmpFileMeta->{cleanHostline}, undef, $addTimestamp, $incrFilename );
-      copy($tmpFileMeta->{localTempPath}, $resultfilename ) or die "Copy failed: $!";
+        my $resultfilename = _getFileName( $tmpFileMeta->{cleanHostline}, undef, $addTimestamp, $incrFilename );
+        my $destination = File::Spec->catfile($localdir//'' , $resultfilename );
+        copy( $tmpFileMeta->{localTempPath}, $destination ) or croak "Copy failed: $!";
     }
 
     return;
-} ## --- end sub _copyFiles
+}    ## --- end sub _copyFiles
 
 sub _concatFiles {
     my ( $resultfile_file_name, $tmpResultfileMeta ) = @_;
@@ -71,10 +88,10 @@ sub _concatFiles {
 }    ## --- end sub _concatFiles
 
 sub _getFileName {
-    my ( $defaultname , $userFilename, $addTimestamp, $incrFilename ) = @_;
+    my ( $defaultname , $localfile, $addTimestamp, $incrFilename ) = @_;
     my $resultfile_file_name = $defaultname;
-    if ($userFilename) {
-        $resultfile_file_name = _setCustomName($resultfile_file_name,$userFilename);
+    if ($localfile) {
+        $resultfile_file_name = _setCustomName($resultfile_file_name,$localfile);
     }
     if ($addTimestamp) {
         $resultfile_file_name = _addTimestamp($resultfile_file_name)
@@ -87,8 +104,8 @@ sub _getFileName {
 
 
 sub _setCustomName {
-    my	( $resultfile_file_name,$filename )	= @_;
-    return $filename;
+    my	( $resultfile_file_name,$localfile )	= @_;
+    return $localfile;
 } ## --- end sub _setCustomName
 
 sub _addTimestamp {

@@ -1,9 +1,9 @@
 #!/usr/bin/env perl
 #===============================================================================
 #
-#         FILE: puppeteerssh.pl
+#         FILE: pussh.pl
 #
-#        USAGE: ./puppeteerssh.pl
+#        USAGE: ./pussh.pl
 #
 #  DESCRIPTION: Lets you copy a program of your choice on multiple servers and
 #               then execute it and then collect the output data from the server
@@ -20,7 +20,7 @@ use feature 'say';
 
 return 1 if caller();
 
-our $VERSION = 0.5;
+our $VERSION = 0.6;
 
 use Parallel::ForkManager;
 
@@ -38,9 +38,12 @@ my $serverArray = $inputData->getServers;
 
 my $numberOfServers = scalar @$serverArray;
 my $numberOfConnections = $cliParams->{'num_connections'} ? $cliParams->{'num_connections'} : $numberOfServers;
-say "Number of servers from the configfiles : $numberOfServers";
-say "Number of maximum parallel connections : $numberOfConnections";
-say "Connecting to the following servers :\n" . join "\n", map { " * " . $_ } @$serverArray;
+
+unless ( $cliParams->{'quiet'} ){
+    say "Number of servers from the configfiles : $numberOfServers";
+    say "Number of maximum parallel connections : $numberOfConnections";
+    say "Connecting to the following servers :\n" . join "\n", map { " * " . $_ } @$serverArray;
+}
 
 my $pm = Parallel::ForkManager->new($numberOfConnections);
 
@@ -58,7 +61,7 @@ DATA_LOOP:
 foreach my $server (@$serverArray) {
     $pm->start() and next DATA_LOOP;
     chomp $server;
-    my $sshConnection = PuppeteerSSH::SSH->new( $server, $cliParams->{ssh_option} );
+    my $sshConnection = PuppeteerSSH::SSH->new( $server, $cliParams->{ssh_option} ); # TODO don't spawn a new one for every fork
     $sshConnection->putFileOnServer( $cliParams->{destination}, $cliParams->{script} );
     $sshConnection->executeOnServer( $cliParams->{destination}, $cliParams->{script} );
     my $copiedTo       = $sshConnection->getFileFromServer( $cliParams->{resultfile} );
@@ -70,8 +73,15 @@ foreach my $server (@$serverArray) {
 }
 
 $pm->wait_all_children();
+my $resultfileOptions = {
+    localfile   => $cliParams->{localfile},
+    localdir    => $cliParams->{localdir},
+    timestamped => $cliParams->{timestamped},
+    increment   => $cliParams->{increment},
+    no_merge    => $cliParams->{no_merge},
+};
 
-PuppeteerSSH::Resultfiles::create( \@tmpResultfileMeta, $cliParams->{localname}, $cliParams->{timestamped}, $cliParams->{increment}, $cliParams->{no_merge} );
+PuppeteerSSH::Resultfiles::create( \@tmpResultfileMeta, $resultfileOptions );
 
 exit;
 
