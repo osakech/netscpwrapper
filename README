@@ -1,4 +1,4 @@
-puppeteerssh.pl
+pussh.pl
 
 I wrote this tool when I had to connect to multiple ssh servers (>50), execute 
 a rather big and complicated script and afterwards collect the results on my 
@@ -38,7 +38,7 @@ alex@myserver2:32769
 
 
 Command Line Interface
-./puppeteerssh [-dfgilmnorst] [long options...] <some-arg>
+./pussh [-cdfgilmnoqrst] [long options...] <some-arg>
 	-g STR --gdsh STR                dsh group name to use
 	-f STR --gfile STR               path to file with list of servers
 	-t --timestamped                 adds timestamp as suffix to the
@@ -47,15 +47,17 @@ Command Line Interface
 	                                 if file already exists like:
 	                                 somename_000001 ..2 ..3
 	-d STR --destination STR         path to copy the script on the server
+	-q --quiet                       quiet mode
 	-n INT --num-connections INT     max number of parallel connections
 	-s STR --script STR              script to execute on server
 	-o STR... --ssh-option STR...    option to pass to ssh, like -o ...
 	                                 -o ...
+	-c STR --localdir STR            set path on local machine for output
+	                                 files
 	-r STR --resultfile STR          path of result file from server
-	-l STR --localname STR           set fixed name and path local result
-	                                 file (default:merged_result)
+	-l STR --localfile STR           set path to local result file
 	-m --no-merge                    don't merge all files into one
-	                                 result file
+	                                 result file, keep one file per server
 	--help                           print usage message and exit
 
 Sytem Requirements
