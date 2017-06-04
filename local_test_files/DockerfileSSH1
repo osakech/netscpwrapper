@@ -5,9 +5,6 @@ RUN apt-get update && apt-get install -y openssh-server
 RUN mkdir /var/run/sshd
 RUN echo 'root:screencast' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN mkdir /root/.ssh
-RUN echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCoNKJXfCmrWv0sFPhdtTVccepDmNtCMAD3ieD+4IFUITR5fyL2cqnjRJY66pEW3Visb6G6iaa5ngY0BK0cKGm20XH3mT6sc2RS36q5wDA6qWiScb04pvys8Um/dLb+S2vLo1UpTn/WczemcQhc3q7Sywz4woAPYbN6eHD5+/c9dyorvA7qyy9zTi0QcIoJVr4MQvol1mu9La0T9gO0LmqM+eoyU0s2DOzkmnD02SEeTUqFA1vGE3Y0blhDwgOtZNQT+oj9kQb3IxDs3SwVA8SaXyQ4mqIFKhsLPRD6Y/kqksx1vNq5n7yxfyZ4Q81ftGwFKBARIJbD7NWnATf0Aa/F alexandros@alexandros-BU203UA" >> /root/.ssh/authorized_keys
-
 
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd

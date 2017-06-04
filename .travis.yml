@@ -1,0 +1,13 @@
+language: perl
+script: 
+    - perl Makefile.PL && make && make test
+sudo: required
+services:
+    - docker
+before_install:
+    - docker build -t sshd -f local_test_files/DockerfileSSH1 .
+    - docker run -d -P --name ssh1 sshd
+    - docker run -d -P --name ssh2 sshd
+    - docker run -d -P --name ssh3 sshd
+    - docker run -d -P --name ssh4 sshd
+    - bash local_test_files/startvms.sh
